@@ -1,9 +1,9 @@
 import numpy as np
 import random as rd
 
-def init_population_generation(n):
+def init_population(POPULATION_SIZE):
     # low while is included, however, high value is excluded in the calcs
-    return np.random.randint(low=1, high=8+1, size=(n, 8))
+    return np.random.randint(low=1, high=8+1, size=(POPULATION_SIZE, 8))
 
 def fitness_function(state):
     # To Check: 
@@ -33,7 +33,7 @@ def eval_fitness(state):
     return np.array(fitness_evals)
 
 # Tournament Strategy: "Best 2 out of Random 5"
-def selection(state, population_size):
+def parent_selection(state, population_size):
     selected_individuals = []
     while(len(selected_individuals) < population_size):
         i = np.random.randint(low=0, high=len(state))
@@ -59,7 +59,7 @@ def selection(state, population_size):
         selected_individuals.extend([nr1_individual, nr2_individual])
     return np.array(selected_individuals)
 
-# state = current boards after selection
+# state = current boards after parent_selection
 # probability = probability of mutation, usually between 70-90%
 def recombination(selected_individuals, population_size, crossover_rate):
     new_population = []
@@ -113,14 +113,15 @@ def visualize_board(state):
     print("\n")
 
 # Main EC-Loop
-population_size = 100
-crossover_rate = 0.8
-mutation_prob = 0.05
-iters = 100
+POPULATION_SIZE = 100
+NUM_OFFSPRING = 2
+CROSSOVER_RATE = 1.0  
+MUTATION_RATE = 0.8  
+ITERS = 10000
 
-init_state = init_population_generation(population_size)
+init_state = init_population(POPULATION_SIZE)
 
-for i in range(iters):
+for i in range(ITERS):
     if(i == 0):
         fitness_evals = eval_fitness(init_state)
         print("START EVAL", np.average(fitness_evals), "\n")
@@ -134,13 +135,18 @@ for i in range(iters):
         print(f"Solution found at iteration {i}")
         break
 
-    selected_state = selection(init_state, population_size)
+    selected_state = parent_selection(init_state, POPULATION_SIZE)
     if (i + 1) % 10 == 0 and (i+1) >= 10:
-        print("SELECTION: ", (i+1), " | ", "Current Best Fitness:", np.average(eval_fitness(selected_state)))
-    recombined_state = recombination(selected_state, population_size, crossover_rate)
+        print("SELECTION:    %5d | Current Best Fitness: %.5f" % ((i+1), np.average(eval_fitness(selected_state))))
+   
+    recombined_state = recombination(selected_state, POPULATION_SIZE, CROSSOVER_RATE)
     if (i + 1) % 10 == 0 and (i+1) >= 10:
-        print("RECOMBINATION: ", (i+1), " | ", "Current Best Fitness:", np.average(eval_fitness(recombined_state)))
-    mutated_state = mutation(recombined_state, mutation_prob)
+        print("RECOMBINATION:%5d | Current Best Fitness: %.5f" % ((i+1), np.average(eval_fitness(recombined_state))))
+   
+    mutated_state = mutation(recombined_state, MUTATION_RATE)
     if (i + 1) % 10 == 0 and (i+1) >= 10:
-        print("MUTATION: ", (i+1), " | ", "Current Best Fitness:", np.average(eval_fitness(mutated_state)))
+        print("MUTATION:     %5d | Current Best Fitness: %.5f" % ((i+1), np.average(eval_fitness(mutated_state))))
         print("")
+
+def ec_algorithm():
+    pass
