@@ -5,8 +5,8 @@ import random as rd
 GENOME_SIZE = 8 # N-QUEENS (EX: 'every Queen has a genome size of 8')
 POPULATION_SIZE = 100
 NUM_OFFSPRING = 2
-RECOMBINATION_RATE = 0.8  
-MUTATION_RATE = 0.2 
+RECOMBINATION_RATE = 0.70  
+MUTATION_RATE = 0.8
 MAX_FITNESS_EVALUATIONS = 10000
 
 # random init of individuals in population of size POPULATION_SIZE
@@ -113,7 +113,7 @@ def visualize_board(individual):
         print(line)
     print("   " + "  ".join(columns[:n]))
     print("\nFitness Evaluation: %8f" % (round(eval_fitness(individual)[0], 2)))
-    print("Solution: ", individual, sep="")
+    print("Solution: ", individual)
     print("\n")
 
 def genetic_algorithm():
