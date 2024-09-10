@@ -13,36 +13,50 @@ def fitness_function(state):
     n = len(state)
     conflict_counter = 0
     for Q1 in range(n):
-        for Q2 in range(Q1 + 1, n):
+        for Q2 in range(Q1+1, n):
             # counts conflicts row-wise
             if(state[Q1] == state[Q2]):
                 conflict_counter += 1
-              # counts conflicts diag-wise
+            # counts conflicts diag-wise
             # EX: [_,1,_,_,_,_,6,_] -> (2,1) & (7,6) => DIAG: (2-7)=(1-6) <=> (-5)=(-5)
-            if(state[Q1] - state[Q2] == Q1 - Q2 or state[Q1] - state[Q2] == Q2 - Q1):
+            if abs(state[Q1] - state[Q2]) == abs(Q1 - Q2):
                 conflict_counter += 1
     return conflict_counter
 
-def eval_curr_fitness(state, population_size):
+def eval_fitness(state):
     fitness_evals = []
-    for i in range(population_size):
-        fitness_evals.append(1 - fitness_function(state[i]) / 28) 
+    if(state.ndim == 1):
+            fitness_evals.append(1 - fitness_function(state) / 28) 
+    elif(state.ndim == 2):
+        for i in range(len(state)):
+            fitness_evals.append(1 - fitness_function(state[i]) / 28) 
     return np.array(fitness_evals)
 
-def selection(state, fitness_evals, population_size):
+# Tournament Strategy: "Best 2 out of Random 5"
+def selection(state, population_size):
     selected_individuals = []
-    copy_state = state
-    copy_fitness_evals = fitness_evals
     while(len(selected_individuals) < population_size):
-        if (copy_state.shape[0] == 0):
-            copy_state = state
-            copy_fitness_evals = fitness_evals
-        i = np.random.randint(low=0, high=len(copy_state))
-        if rd.random() < copy_fitness_evals[i]:
-            selected_individuals.append(copy_state[i])
-            copy_state = np.delete(arr=copy_state, obj=i, axis=0)
-            copy_fitness_evals = np.delete(arr=copy_fitness_evals, obj=i, axis=0)
-        
+        i = np.random.randint(low=0, high=len(state))
+        idxs = np.random.choice(population_size, 5, replace=False)
+        nr1_individual = nr2_individual = 0
+        for i in range(idxs.size):
+            if(i == 0):
+                if(eval_fitness(state[idxs[0]]) > eval_fitness(state[idxs[1]])):
+                    nr1_individual = state[idxs[0]].copy()
+                    nr2_individual = state[idxs[1]].copy()
+                    continue
+                else:
+                    nr1_individual = state[idxs[1]].copy()
+                    nr2_individual = state[idxs[0]].copy()
+                    continue
+            if(i == 1):
+                continue
+            if(eval_fitness(state[idxs[i]]) > eval_fitness(nr1_individual)):
+                nr2_individual = nr1_individual.copy()
+                nr1_individual = state[idxs[i]].copy()
+            if(eval_fitness(state[idxs[i]]) > eval_fitness(nr2_individual)):
+                nr2_individual = state[idxs[i]].copy()
+        selected_individuals.extend([nr1_individual, nr2_individual])
     return np.array(selected_individuals)
 
 # state = current boards after selection
@@ -74,7 +88,6 @@ def recombination(selected_individuals, population_size, crossover_rate):
         else:
             new_population.append(dad)
             new_population.append(mom)
-
     return np.array(new_population[:population_size])
 
 def mutation(state, mutation_prob):
@@ -100,28 +113,34 @@ def visualize_board(state):
     print("\n")
 
 # Main EC-Loop
-population_size = 1000
+population_size = 100
 crossover_rate = 0.8
-mutation_prob = 0.3
+mutation_prob = 0.05
+iters = 100
 
 init_state = init_population_generation(population_size)
 
-iters = 1000
 for i in range(iters):
     if(i == 0):
-        fitness_evals = eval_curr_fitness(init_state, population_size)
+        fitness_evals = eval_fitness(init_state)
+        print("START EVAL", np.average(fitness_evals), "\n")
     else:
-        fitness_evals = eval_curr_fitness(mutated_state, population_size)
+        fitness_evals = eval_fitness(mutated_state)
 
     if(np.any(fitness_evals == 1)):
         best_individual = mutated_state[np.argmax(fitness_evals)]
         visualize_board(best_individual)
+        print(best_individual)
         print(f"Solution found at iteration {i}")
         break
 
-    selected_state = selection(init_state, fitness_evals, population_size)
-    recombined_state = recombination(selected_state, population_size, crossover_rate)
-    mutated_state = mutation(recombined_state, mutation_prob)
-
+    selected_state = selection(init_state, population_size)
     if (i + 1) % 10 == 0 and (i+1) >= 10:
-        print("Iteration: ", (i+1), " | ", "Current Best Fitness:", np.max(fitness_evals))
+        print("SELECTION: ", (i+1), " | ", "Current Best Fitness:", np.average(eval_fitness(selected_state)))
+    recombined_state = recombination(selected_state, population_size, crossover_rate)
+    if (i + 1) % 10 == 0 and (i+1) >= 10:
+        print("RECOMBINATION: ", (i+1), " | ", "Current Best Fitness:", np.average(eval_fitness(recombined_state)))
+    mutated_state = mutation(recombined_state, mutation_prob)
+    if (i + 1) % 10 == 0 and (i+1) >= 10:
+        print("MUTATION: ", (i+1), " | ", "Current Best Fitness:", np.average(eval_fitness(mutated_state)))
+        print("")
