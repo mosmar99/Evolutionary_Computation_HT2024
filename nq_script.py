@@ -42,36 +42,36 @@ class Nq_evolution:
 
     # state = current boards after selection
     # probability = probability of mutation, usually between 70-90%
-    def recombination1(self, selected_individuals):
-        new_population = []
-        copy_selected_individuals = selected_individuals.copy()
+def recombination1(self, selected_individuals):
+    new_population = []
+    copy_selected_individuals = selected_individuals.copy()
 
-        while len(new_population) < self.population_size:
-            crossover_point = np.random.randint(1, self.num_queens)
-            dad_idx = np.random.randint(0, len(copy_selected_individuals))
-            mom_idx = dad_idx
-            while(dad_idx == mom_idx):
-                mom_idx = np.random.randint(0, len(copy_selected_individuals))
-            dad = copy_selected_individuals[dad_idx]
-            mom = copy_selected_individuals[mom_idx]
+    while len(new_population) < self.population_size:
+        crossover_point = np.random.randint(1, self.num_queens)
+        dad_idx = np.random.randint(0, len(copy_selected_individuals))
+        mom_idx = dad_idx
+        while(dad_idx == mom_idx):
+            mom_idx = np.random.randint(0, len(copy_selected_individuals))
+        dad = copy_selected_individuals[dad_idx]
+        mom = copy_selected_individuals[mom_idx]
 
-            if(np.random.rand() < self.crossover_rate):
-                child_one = [0] * self.num_queens
-                child_two = [0] * self.num_queens
-                for j in range(self.num_queens):
-                    if(j < crossover_point):
-                        child_one[j] = dad[j]
-                        child_two[j] = mom[j]
-                    else:
-                        child_one[j] = mom[j]
-                        child_two[j] = dad[j]
-                new_population.append(child_one)
-                new_population.append(child_two)
-            else:
-                new_population.append(dad)
-                new_population.append(mom)
+        if(np.random.rand() < self.crossover_rate):
+            child_one = [0] * self.num_queens
+            child_two = [0] * self.num_queens
+            for j in range(self.num_queens):
+                if(j < crossover_point):
+                    child_one[j] = dad[j]
+                    child_two[j] = mom[j]
+                else:
+                    child_one[j] = mom[j]
+                    child_two[j] = dad[j]
+            new_population.append(child_one)
+            new_population.append(child_two)
+        else:
+            new_population.append(dad)
+            new_population.append(mom)
 
-        return np.array(new_population[:self.population_size])
+    return np.array(new_population[:self.population_size])
     
     #endregion
 
@@ -160,12 +160,11 @@ class Nq_evolution:
 
     def eval_fitness1(self, population):
         fitness_evals = []
-        denominator = (self.num_queens * (self.num_queens - 1)) / 2
         if(population.ndim == 1):
-                fitness_evals.append(1 - Nq_evolution.fitness_function(population) / denominator) 
+                fitness_evals.append(1 - Nq_evolution.fitness_function(population) / 28) 
         elif(population.ndim == 2):
             for i in range(len(population)):
-                fitness_evals.append(1 - Nq_evolution.fitness_function(population[i]) / denominator) 
+                fitness_evals.append(1 - Nq_evolution.fitness_function(population[i]) / 28) 
         return np.array(fitness_evals)
     
     #endregion
