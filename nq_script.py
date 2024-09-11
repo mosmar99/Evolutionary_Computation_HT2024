@@ -1,5 +1,7 @@
 import numpy as np
 import random as rd
+import csv
+import os
 
 class Nq_evolution:
     def __init__(self, num_queens, population_size, crossover_rate, mutation_prob, max_iters, **kwargs) -> None:
@@ -8,7 +10,7 @@ class Nq_evolution:
         selection_strategies = { 'strategy1': self.selection1,
                                  'tournament': self.selection_tournament }
 
-        recombination_strategies = { 'strategy1': self.recombination1 }
+        recombination_strategies = { 'strategy1': self.recombination1}
 
         mutation_strategies = { 'strategy1': self.mutation1 }
 
@@ -28,8 +30,19 @@ class Nq_evolution:
         self.mutation                   = mutation_strategies[kwargs['mutation_strategy']]
         self.eval_fitness               = eval_strategies[kwargs['eval_strategy']]
         self.evolve                     = evolution_strategies[kwargs['evolution_strategy']]
+        self.csv_file                   = 'evolution_log.csv'
 
-        
+        #in case csv file doesn't exist create one & add the headers.
+        if not os.path.exists(self.csv_file):
+            with open(self.csv_file, "w", newline="") as csvfile:
+                csv.writer(csvfile).writerow([
+                    'Stage', 'Iteration', 'Average Fitness',
+                    'Init Strategy', 'Selection Strategy', 'Recombination Strategy',
+                    'Mutation Strategy', 'Eval Strategy', 'Evolution Strategy',
+                    'Num Queens', 'Population Size', 'Crossover Rate',
+                    'Mutation Probability', 'Max Iterations'
+                ])
+
     #region init strategies
 
     def init_population_random(self):
@@ -42,36 +55,36 @@ class Nq_evolution:
 
     # state = current boards after selection
     # probability = probability of mutation, usually between 70-90%
-def recombination1(self, selected_individuals):
-    new_population = []
-    copy_selected_individuals = selected_individuals.copy()
+    def recombination1(self, selected_individuals):
+        new_population = []
+        copy_selected_individuals = selected_individuals.copy()
 
-    while len(new_population) < self.population_size:
-        crossover_point = np.random.randint(1, self.num_queens)
-        dad_idx = np.random.randint(0, len(copy_selected_individuals))
-        mom_idx = dad_idx
-        while(dad_idx == mom_idx):
-            mom_idx = np.random.randint(0, len(copy_selected_individuals))
-        dad = copy_selected_individuals[dad_idx]
-        mom = copy_selected_individuals[mom_idx]
+        while len(new_population) < self.population_size:
+            crossover_point = np.random.randint(1, self.num_queens)
+            dad_idx = np.random.randint(0, len(copy_selected_individuals))
+            mom_idx = dad_idx
+            while(dad_idx == mom_idx):
+                mom_idx = np.random.randint(0, len(copy_selected_individuals))
+            dad = copy_selected_individuals[dad_idx]
+            mom = copy_selected_individuals[mom_idx]
 
-        if(np.random.rand() < self.crossover_rate):
-            child_one = [0] * self.num_queens
-            child_two = [0] * self.num_queens
-            for j in range(self.num_queens):
-                if(j < crossover_point):
-                    child_one[j] = dad[j]
-                    child_two[j] = mom[j]
-                else:
-                    child_one[j] = mom[j]
-                    child_two[j] = dad[j]
-            new_population.append(child_one)
-            new_population.append(child_two)
-        else:
-            new_population.append(dad)
-            new_population.append(mom)
+            if(np.random.rand() < self.crossover_rate):
+                child_one = [0] * self.num_queens
+                child_two = [0] * self.num_queens
+                for j in range(self.num_queens):
+                    if(j < crossover_point):
+                        child_one[j] = dad[j]
+                        child_two[j] = mom[j]
+                    else:
+                        child_one[j] = mom[j]
+                        child_two[j] = dad[j]
+                new_population.append(child_one)
+                new_population.append(child_two)
+            else:
+                new_population.append(dad)
+                new_population.append(mom)
 
-    return np.array(new_population[:self.population_size])
+        return np.array(new_population[:self.population_size])
     
     #endregion
 
@@ -172,16 +185,26 @@ def recombination1(self, selected_individuals):
     #region evolution strategies
 
     def evolution1(self, population, iteration):
+
         selected_state = self.selection(population)
         if (iteration + 1) % 10 == 0 and (iteration+1) >= 10:
+            avg_fitness = np.average(self.eval_fitness(selected_state))
             print("SELECTION: ", (iteration+1), " | ", "Current Best Fitness:", np.average(self.eval_fitness(selected_state)))
+            self.log_iteration("SELECTION", iteration+1, avg_fitness)
+
         recombined_state = self.recombination(selected_state)
         if (iteration + 1) % 10 == 0 and (iteration+1) >= 10:
-            print("RECOMBINATION: ", (iteration+1), " | ", "Current Best Fitness:", np.average(self.eval_fitness(recombined_state)))
+            avg_fitness = np.average(self.eval_fitness(recombined_state))
+            print("RECOMBINATION: ", (iteration+1), " | ", "Current Best Fitness:", avg_fitness)
+            self.log_iteration("RECOMBINATION", iteration+1, avg_fitness)
+
         mutated_state = self.mutation(recombined_state)
         if (iteration + 1) % 10 == 0 and (iteration+1) >= 10:
-            print("MUTATION: ", (iteration+1), " | ", "Current Best Fitness:", np.average(self.eval_fitness(mutated_state)))
+            avg_fitness = np.average(self.eval_fitness(mutated_state))
+            print("MUTATION: ", (iteration+1), " | ", "Current Best Fitness:", avg_fitness)
             print("")
+            self.log_iteration("MUTATION", iteration+1, avg_fitness)
+
         return mutated_state
     
     #endregion
@@ -201,6 +224,23 @@ def recombination1(self, selected_individuals):
             print(line)
         print("   " + "  ".join(columns[:n]))
         print("\n")
+    
+    def log_iteration(self, stage, iteration, avg_fitness):
+        #Logging each stage with the fitness value to CSV
+        with open(self.csv_file, 'a', newline='') as csvfile:
+            csvwriter = csv.writer(csvfile)
+            csvwriter.writerow([
+                stage, iteration, avg_fitness,
+                self.init_population_generation.__name__,
+                self.selection.__name__,
+                self.recombination.__name__,
+                self.mutation.__name__,
+                self.eval_fitness.__name__,
+                self.evolve.__name__,
+                self.num_queens, self.population_size, self.crossover_rate,
+                self.mutation_prob, self.max_iters
+            ])
+
     #endregion
     
     def solve(self):
@@ -225,7 +265,7 @@ def nq_solve_standard():
                    'eval_strategy':             'strategy1',
                    'evolution_strategy':        'strategy1'}
     
-    nq_evolution = Nq_evolution(8, 100, 0.8, 0.05, 1000, **strategies)
+    nq_evolution = Nq_evolution(8, 100, 0.8, 0.05, 100, **strategies)
     nq_evolution.solve()
 
 if __name__ == '__main__':
