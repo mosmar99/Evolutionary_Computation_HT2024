@@ -140,8 +140,8 @@ class Nq_evolution:
     def mutation1(self, population):
         for board in population:
             if(np.random.rand() < self.mutation_prob):
-                new_gene = np.random.randint(1, 9)
-                insert_idx = np.random.randint(0, 8)
+                new_gene = np.random.randint(1, self.num_queens + 1)
+                insert_idx = np.random.randint(0, self.num_queens)
                 board[insert_idx] = new_gene
         return population
     
@@ -173,11 +173,12 @@ class Nq_evolution:
 
     def eval_fitness1(self, population):
         fitness_evals = []
+        denominator = (self.num_queens * (self.num_queens - 1)) / 2
         if(population.ndim == 1):
-                fitness_evals.append(1 - Nq_evolution.fitness_function(population) / 28) 
+                fitness_evals.append(1 - Nq_evolution.fitness_function(population) / denominator) 
         elif(population.ndim == 2):
             for i in range(len(population)):
-                fitness_evals.append(1 - Nq_evolution.fitness_function(population[i]) / 28) 
+                fitness_evals.append(1 - Nq_evolution.fitness_function(population[i]) / denominator) 
         return np.array(fitness_evals)
     
     #endregion
@@ -265,7 +266,8 @@ def nq_solve_standard():
                    'eval_strategy':             'strategy1',
                    'evolution_strategy':        'strategy1'}
     
-    nq_evolution = Nq_evolution(8, 100, 0.8, 0.05, 100, **strategies)
+
+    nq_evolution = Nq_evolution(10, 100, 0.8, 0.05, 1000, **strategies)
     nq_evolution.solve()
 
 if __name__ == '__main__':
