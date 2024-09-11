@@ -3,6 +3,7 @@ import numpy as np
 class Mutation():
     def __init__(self, mutation_strategy):
         mutation_strategies = {'swap_mutation': self.swap_mutation}
+        
         self.mutation_strategy = mutation_strategies[mutation_strategy]
     
     def __call__(self, *args, **kwargs):
