@@ -1,5 +1,23 @@
 import numpy as np
 
+class Fitness_Function():
+    def __init__(self, fitness_strategy):
+        self.fitness_strategy = fitness_strategy
+
+    def __call__(self, *args, **kwargs):
+        return self.fitness_strategy.exec(*args, **kwargs)
+    
+    # returns an fitness array of current population (may be 1 individual in population or more) 
+    def conflict_based(self, population):
+        fitness_evals = []
+        denominator = (self.num_queens * (self.num_queens - 1)) / 2
+        if(np.array(population).ndim == 1):
+                fitness_evals.append(1 - conflict_counter(population) / denominator) 
+        elif(np.array(population).ndim == 2):
+            for i in range(len(population)):
+                fitness_evals.append(1 - conflict_counter(population[i]) / denominator) 
+        return fitness_evals
+    
 def conflict_counter(individual):
     # To Check: 
     # 1] Queens can't be in the same row (due to individual representation, no need to check for conflicting columns)
@@ -18,21 +36,3 @@ def conflict_counter(individual):
             if abs(individual[Q1] - individual[Q2]) == abs(Q1 - Q2):
                 conflict_counter += 1
     return conflict_counter
-
-class Conflict_Based():
-    # returns an fitness array of current population (may be 1 individual in population or more) 
-    def exec(self, population):
-        fitness_evals = []
-        if(np.array(population).ndim == 1):
-                fitness_evals.append(1 - conflict_counter(population) / 28) 
-        elif(np.array(population).ndim == 2):
-            for i in range(len(population)):
-                fitness_evals.append(1 - conflict_counter(population[i]) / 28) 
-        return fitness_evals
-
-class Fitness_Function(object):
-    def __init__(self, fitness_strategy):
-        self.fitness_strategy = fitness_strategy
-    
-    def evaluate(self, population):
-        return self.fitness_strategy.exec(population) 
