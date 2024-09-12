@@ -9,10 +9,11 @@ class Mutation():
     def __call__(self, *args, **kwargs):
         return self.mutate(*args, **kwargs)
     
-    def mutate(self, population, mutation_rate, GENOME_SIZE):
-        for i in range(len(population)):
+    def mutate(self, offspring, mutation_rate, GENOME_SIZE):
+        for i in range(len(offspring)):
             if (np.random.rand() <= mutation_rate):
-                population[i] = self.mutation_strategy(population[i], GENOME_SIZE)
+                offspring[i] = self.mutation_strategy(offspring[i], GENOME_SIZE)
+        return offspring
     
     # [_,_,3,_,_,_,8,_] -> (with prob mutation_rate, will become) -> [_,_,8,_,_,_,3,_]
     def swap_mutation(self, individual, GENOME_SIZE):

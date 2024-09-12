@@ -2,54 +2,58 @@
 import config
 import numpy as np
 import random as rd
-from init_pop import Init_Pop, Init_Random
-from fitness import Fitness_Function, Conflict_Based
-from mutation import Mutation, Swap_Mutation
-from recombination import Recombination, Cut_And_Crossfill
-from selection import Selection, Tournament, Delete_Replace
+from init_pop import Init_Pop
+from fitness import Fitness_Function
+from mutation import Mutation
+from recombination import Recombination
+from survival_selection import Survival_Selection
+from parent_selection import Parent_Selection
 from termination import Termination, Evaluation_Count
-from visuals import Visualization, Terminal
+from visuals import Visualization
 
 def genetic_algorithm_1():
     is_solution = False
-    CURR_FITNESS_EVALUATIONS  = 0
+    curr_fitness_evaluations = 0
 
-    init_obj = Init_Pop(Init_Random())
-    fitness_obj = Fitness_Function(Conflict_Based())
-    selection_obj = Selection(parent_strategy=Tournament(), survival_strategy=Delete_Replace())
-    recombination_obj = Recombination(Cut_And_Crossfill())
-    mutation_obj = Mutation(Swap_Mutation())
-    visual_obj = Visualization(Terminal())
+    init = Init_Pop('random')
+    fitness_function = Fitness_Function('conflict_based')
+    fitness = lambda population: fitness_function(population, config.GENOME_SIZE)
+    parent_selection = Parent_Selection('tournament_2_5')
+    survival_selection = Survival_Selection('del_rep_2')
+    recombination = Recombination('cut_and_crossfill')
+    mutation = Mutation('swap_mutation')
+    visual = Visualization('terminal')
 
-    population = init_obj.initialize_population(config.GENOME_SIZE, config.POPULATION_SIZE)
+    population = init(config.GENOME_SIZE, config.POPULATION_SIZE)
 
-    if CURR_FITNESS_EVALUATIONS == 0:
-        curr_most_fit_individual = max(fitness_obj.evaluate(population))
-        print("\nEvaluation Count: %8d  |  %8f" % (CURR_FITNESS_EVALUATIONS, curr_most_fit_individual))
+    if curr_fitness_evaluations == 0:
+        curr_most_fit_individual = max(fitness(population))
+        print("\nEvaluation Count: %8d  |  %8f" % (curr_fitness_evaluations, curr_most_fit_individual))
         print("")
 
     while( not(Termination(Evaluation_Count()).is_terminate(
-            curr_fitness_evaluations=CURR_FITNESS_EVALUATIONS,
+            curr_fitness_evaluations=curr_fitness_evaluations,
             max_fitness_evaluations=config.MAX_FITNESS_EVALUATIONS,
             curr_iterations=0,  
             max_iterations=10000, 
             is_solution=is_solution )) ):
         
-        selected_parents = selection_obj.pick_2_5(population)
-        offspring = recombination_obj.recombine(selected_parents, config.RECOMBINATION_RATE, config.GENOME_SIZE)
-        mutated_offspring = [mutation_obj.mutate(child, config.MUTATION_RATE, config.GENOME_SIZE) for child in offspring]
-        offspring_fitness = fitness_obj.evaluate(mutated_offspring)
-        CURR_FITNESS_EVALUATIONS += len(offspring_fitness)
-        population = selection_obj.del_rep_2(population, mutated_offspring)
+        selected_parents = parent_selection(population, fitness)
+        offspring = recombination(selected_parents, config.RECOMBINATION_RATE, config.GENOME_SIZE)
+        mutated_offspring = mutation(offspring, config.MUTATION_RATE, config.GENOME_SIZE)
+        offspring_fitness = fitness(mutated_offspring)
+        curr_fitness_evaluations += len(offspring_fitness)
+        population = survival_selection(population, mutated_offspring, fitness)
 
-        if CURR_FITNESS_EVALUATIONS % 500 == 0:
-            curr_most_fit_individual = max(fitness_obj.evaluate(population))
-            print("Evaluation Count: %8d  |  %8f" % (CURR_FITNESS_EVALUATIONS, curr_most_fit_individual))
+        if curr_fitness_evaluations % 500 == 0:
+            curr_most_fit_individual = max(fitness(population))
+            print("Evaluation Count: %8d  |  %8f" % (curr_fitness_evaluations, curr_most_fit_individual))
 
-        if (max(fitness_obj.evaluate(population)) == 1):
+        if (max(fitness(population)) == 1):
             is_solution = True
 
-    best_individual = max(population, key=fitness_obj.evaluate)
-    visual_obj.view(best_individual)
+    best_individual = max(population, key=fitness)
+    visual(best_individual, fitness)
 
-genetic_algorithm_1()
+if __name__ == '__main__':
+    genetic_algorithm_1()

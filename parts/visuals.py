@@ -1,8 +1,14 @@
 import numpy as np
-from fitness import Fitness_Function, Conflict_Based
 
-class Terminal:
-    def exec(self, individual):
+class Visualization():
+    def __init__(self, visualization_strategy):
+        visualization_strategies = { 'terminal': self.terminal }
+        self.visualization_strategy = visualization_strategies[visualization_strategy]
+
+    def __call__(self, *args, **kwargs):
+        self.visualization_strategy(*args, **kwargs)
+    
+    def terminal(self, individual, fitness_function):
         n = len(individual)
         columns = "abcdefgh"
         print("\n")
@@ -14,13 +20,6 @@ class Terminal:
             line += f"{row + 1}"
             print(line)
         print("   " + "  ".join(columns[:n]))
-        print("\nFitness Evaluation: %8f" % (round(Fitness_Function(Conflict_Based()).evaluate(individual)[0], 2)))
+        print("\nFitness Evaluation: %8f" % (round(fitness_function(individual)[0], 2)))
         print("Solution: ", individual)
         print("\n")
-
-class Visualization(object):
-    def __init__(self, visualization_strategy):
-        self.visualization_strategy = visualization_strategy
-
-    def view(self, individual):
-        return self.visualization_strategy.exec(individual)

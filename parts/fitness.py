@@ -9,9 +9,9 @@ class Fitness_Function():
         return self.fitness_strategy(*args, **kwargs)
     
     # returns an fitness array of current population (may be 1 individual in population or more) 
-    def conflict_based(self, population):
+    def conflict_based(self, population, genome_size):
         fitness_evals = []
-        denominator = (self.num_queens * (self.num_queens - 1)) / 2
+        denominator = (genome_size * (genome_size - 1)) / 2
         if(np.array(population).ndim == 1):
                 fitness_evals.append(1 - conflict_counter(population) / denominator) 
         elif(np.array(population).ndim == 2):

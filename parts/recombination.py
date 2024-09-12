@@ -12,7 +12,7 @@ class Recombination(object):
     def recombine(self, selected_parents, recombination_rate, GENOME_SIZE):
         offspring = []
         for parents in selected_parents:
-            offspring.append(self.generate_offspring(parents, recombination_rate, GENOME_SIZE))
+            offspring.extend(self.generate_offspring(parents, recombination_rate, GENOME_SIZE))
         
         return np.array(offspring)
     
@@ -26,7 +26,7 @@ class Recombination(object):
             return parents
     
     # at crossover point (cut_index), cutt both parents DNA and crossfill
-    def cut_and_crossfill(dad, mom, GENOME_SIZE):
+    def cut_and_crossfill(self, dad, mom, GENOME_SIZE):
         child_one = []
         child_two = []
         cut_index = GENOME_SIZE/2
