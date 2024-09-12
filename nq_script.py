@@ -303,7 +303,8 @@ def nq_solve_standard():
                    'eval_strategy':             'strategy1',
                    'evolution_strategy':        'strategy1'}
     
-    nq_evolution = Nq_evolution(8, 100, 0.8, 0.05, 100, **strategies)
+
+    nq_evolution = Nq_evolution(10, 100, 0.8, 0.05, 1000, **strategies)
     nq_evolution.solve()
 
 if __name__ == '__main__':
