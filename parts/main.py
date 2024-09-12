@@ -18,6 +18,7 @@ class Genetic_Algorithm:
         self.MAX_FITNESS_EVALUATIONS = kwargs['MAX_FITNESS_EVALUATIONS']
 
         self.init = Init_Pop(kwargs['initialization_strategy'])
+
         self.fitness_function = Fitness_Function(kwargs['fitness_strategy'])
         self.fitness = lambda population: self.fitness_function(population, self.GENOME_SIZE)
         self.parent_selection = Parent_Selection(kwargs['parent_selection_strategy'])
@@ -26,6 +27,20 @@ class Genetic_Algorithm:
         self.mutation = Mutation(kwargs['mutation_strategy'])
         self.visual = Visualization(kwargs['visualization_strategy'])
         self.termination = Termination(kwargs['termination_strategy'])
+
+        evolution_strategies = { 'standard_evolve': self.standard_evolve }
+        self.evolution_strategy = evolution_strategies[kwargs['evolution_strategy']]
+
+    def evolve(self, population):
+        self.evolution_strategy(population)
+
+    def standard_evolve(self, population):
+        selected_parents = self.parent_selection(population, self.NUM_OFFSPRING, self.fitness)
+        offspring = self.recombination(selected_parents, self.RECOMBINATION_RATE, self.GENOME_SIZE)
+        mutated_offspring = self.mutation(offspring, self.MUTATION_RATE, self.GENOME_SIZE)
+        offspring_fitness = self.fitness(mutated_offspring)
+        curr_fitness_evaluations += len(offspring_fitness)
+        population = self.survival_selection(population, mutated_offspring, self.fitness)
 
     def solve(self):
         is_solution = False
@@ -44,12 +59,7 @@ class Genetic_Algorithm:
                                      max_iterations=10000, 
                                      is_solution=is_solution )) ):
             
-            selected_parents = self.parent_selection(population, self.NUM_OFFSPRING, self.fitness)
-            offspring = self.recombination(selected_parents, self.RECOMBINATION_RATE, self.GENOME_SIZE)
-            mutated_offspring = self.mutation(offspring, self.MUTATION_RATE, self.GENOME_SIZE)
-            offspring_fitness = self.fitness(mutated_offspring)
-            curr_fitness_evaluations += len(offspring_fitness)
-            population = self.survival_selection(population, mutated_offspring, self.fitness)
+            self.evolve(population)
 
             if curr_fitness_evaluations % 500 == 0:
                 curr_most_fit_individual = max(self.fitness(population))
@@ -75,7 +85,8 @@ if __name__ == '__main__':
               'recombination_strategy':     'cut_and_crossfill',
               'mutation_strategy':          'swap_mutation',
               'termination_strategy':       'evaluation_count',
-              'visualization_strategy':     'terminal'}
+              'visualization_strategy':     'terminal',
+              'evolution_strategy':         'standard_evolve'}
     
     ga = Genetic_Algorithm(**setup)
     ga.solve()

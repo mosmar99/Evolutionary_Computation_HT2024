@@ -24,6 +24,3 @@ class Init_Pop:
             permutations[i] = np.random.permutation(base)
 
         return permutations
-
-if __name__ == '__main__':
-    population = Init_Pop('random')()

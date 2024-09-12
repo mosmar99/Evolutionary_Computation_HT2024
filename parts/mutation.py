@@ -27,7 +27,3 @@ class Mutation:
         individual[gene_idx1] = gene2
         individual[gene_idx2] = gene1
         return individual
-
-
-if __name__ == '__main__':
-    population = Mutation('random')()
