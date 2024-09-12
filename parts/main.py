@@ -44,7 +44,7 @@ class Genetic_Algorithm:
                                      max_iterations=10000, 
                                      is_solution=is_solution )) ):
             
-            selected_parents = self.parent_selection(population, self.fitness)
+            selected_parents = self.parent_selection(population, self.NUM_OFFSPRING, self.fitness)
             offspring = self.recombination(selected_parents, self.RECOMBINATION_RATE, self.GENOME_SIZE)
             mutated_offspring = self.mutation(offspring, self.MUTATION_RATE, self.GENOME_SIZE)
             offspring_fitness = self.fitness(mutated_offspring)

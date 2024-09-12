@@ -9,9 +9,9 @@ class Parent_Selection:
     def __call__(self, *args, **kwargs):
         return self.parent_strategy(*args, **kwargs)
 
-    def tournament_2_5(self, population, fitness_function):
+    def tournament_2_5(self, population, NUM_OFFSPRING, fitness_function):
         parents = []
-        for i in range(round(len(population)/50)):
+        for i in range(round(NUM_OFFSPRING/2)):
             candidate_indecies = np.random.choice(population.shape[0], 5, replace=True)
             sorted_candidates = sorted(population[candidate_indecies], key=lambda idx: fitness_function(population[idx]), reverse=True)
 
