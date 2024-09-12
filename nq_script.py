@@ -10,7 +10,8 @@ class Nq_evolution:
         selection_strategies = { 'strategy1': self.selection1,
                                  'tournament': self.selection_tournament }
 
-        recombination_strategies = { 'strategy1': self.recombination1}
+        recombination_strategies = { 'strategy1': self.recombination1,
+                                    'twoPointCrossover': self.twoPointCrossover }
 
         mutation_strategies = { 'strategy1': self.mutation1 }
 
@@ -86,6 +87,42 @@ class Nq_evolution:
 
         return np.array(new_population[:self.population_size])
     
+    def twoPointCrossover(self, selected_individuals):
+        new_population = []
+        copy_selected_individuals = selected_individuals.copy()
+
+        while len(new_population) < self.population_size:
+            #two crossover points
+            crossover_point_A = np.random.randint(1, self.num_queens - 1)
+            crossover_point_B = np.random.randint(crossover_point_A + 1, self.num_queens) # +1 to ensure they are never equal
+            
+            dad_idx = np.random.randint(0, len(copy_selected_individuals))
+            mom_idx = dad_idx
+            while(dad_idx == mom_idx):
+                mom_idx = np.random.randint(0, len(copy_selected_individuals))
+
+            dad = copy_selected_individuals[dad_idx]
+            mom = copy_selected_individuals[mom_idx]
+
+            if(np.random.rand() < self.crossover_rate):
+                child_one = [0] * self.num_queens
+                child_two = [0] * self.num_queens
+
+                #copy values between point A & point B into respective child
+                for idx in range(self.num_queens):
+                    if crossover_point_A <= idx <= crossover_point_B:
+                        child_one[idx] = dad[idx]
+                        child_two[idx] = mom[idx]
+                    else:
+                        child_one[idx] = mom[idx]
+                        child_two[idx] = dad[idx]
+                new_population.append(child_one)
+                new_population.append(child_two)
+            else:
+                new_population.append(dad)
+                new_population.append(mom)
+        return np.array(new_population[:self.population_size])
+    
     #endregion
 
     #region Selection strategies
@@ -140,8 +177,8 @@ class Nq_evolution:
     def mutation1(self, population):
         for board in population:
             if(np.random.rand() < self.mutation_prob):
-                new_gene = np.random.randint(1, 9)
-                insert_idx = np.random.randint(0, 8)
+                new_gene = np.random.randint(1, self.num_queens + 1)
+                insert_idx = np.random.randint(0, self.num_queens)
                 board[insert_idx] = new_gene
         return population
     
@@ -173,11 +210,12 @@ class Nq_evolution:
 
     def eval_fitness1(self, population):
         fitness_evals = []
+        denominator = (self.num_queens * (self.num_queens - 1)) / 2
         if(population.ndim == 1):
-                fitness_evals.append(1 - Nq_evolution.fitness_function(population) / 28) 
+                fitness_evals.append(1 - Nq_evolution.fitness_function(population) / denominator) 
         elif(population.ndim == 2):
             for i in range(len(population)):
-                fitness_evals.append(1 - Nq_evolution.fitness_function(population[i]) / 28) 
+                fitness_evals.append(1 - Nq_evolution.fitness_function(population[i]) / denominator) 
         return np.array(fitness_evals)
     
     #endregion
@@ -260,8 +298,8 @@ class Nq_evolution:
 def nq_solve_standard():
     strategies = { 'init_strategy':             'strategy1',
                    'selection_strategy':        'tournament',
-                   'recombination_strategy':    'strategy1',
-                   'mutation_strategy':         'strategy1',
+                   'recombination_strategy':    'twoPointCrossover',
+                   'mutation_strategy':         'strategy1',    
                    'eval_strategy':             'strategy1',
                    'evolution_strategy':        'strategy1'}
     
