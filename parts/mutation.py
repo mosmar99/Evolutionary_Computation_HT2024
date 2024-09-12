@@ -1,6 +1,6 @@
 import numpy as np
 
-class Mutation():
+class Mutation:
     def __init__(self, mutation_strategy):
         mutation_strategies = {'swap_mutation': self.swap_mutation}
         

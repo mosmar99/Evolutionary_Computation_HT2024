@@ -1,6 +1,6 @@
 import numpy as np
 
-class Fitness_Function():
+class Fitness_Function:
     def __init__(self, fitness_strategy):
         fitness_strategies = { "conflict_based": self.conflict_based}
         self.fitness_strategy = fitness_strategies[fitness_strategy]

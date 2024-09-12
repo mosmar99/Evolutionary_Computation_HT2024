@@ -1,6 +1,6 @@
 import numpy as np
 
-class Init_Pop():
+class Init_Pop:
     def __init__(self, initialization_strategy):
         init_strategies = { 'random': self.init_random,
                             'random_permutations': self.init_random_permutations }
@@ -20,7 +20,7 @@ class Init_Pop():
         base = np.arange(GENOME_SIZE)
         permutations = np.empty((POPULATION_SIZE, GENOME_SIZE), dtype=int)
 
-        for i in range(self.population_size):
+        for i in range(POPULATION_SIZE):
             permutations[i] = np.random.permutation(base)
 
         return permutations

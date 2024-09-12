@@ -1,10 +1,10 @@
 import numpy as np
 import random as rd
 
-class Survival_Selection():
-    def __init__(self, survival_strategy):
+class Survival_Selection:
+    def __init__(self, survival_selection_strategy):
         survival_strategies = { 'del_rep_2': self.del_rep_2 }
-        self.survival_strategy = survival_strategies[survival_strategy]
+        self.survival_strategy = survival_strategies[survival_selection_strategy]
 
     def __call__(self, *args, **kwargs):
         return self.survival_strategy(*args, **kwargs)

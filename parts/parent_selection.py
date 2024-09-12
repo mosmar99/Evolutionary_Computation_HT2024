@@ -1,7 +1,7 @@
 import numpy as np
 import random as rd
 
-class Parent_Selection():
+class Parent_Selection:
     def __init__(self, parent_selection_strategy):
         parent_selection_strategies = { 'tournament_2_5': self.tournament_2_5 }
         self.parent_strategy = parent_selection_strategies[parent_selection_strategy]

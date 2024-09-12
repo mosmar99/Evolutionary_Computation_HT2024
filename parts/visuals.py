@@ -1,6 +1,6 @@
 import numpy as np
 
-class Visualization():
+class Visualization:
     def __init__(self, visualization_strategy):
         visualization_strategies = { 'terminal': self.terminal }
         self.visualization_strategy = visualization_strategies[visualization_strategy]

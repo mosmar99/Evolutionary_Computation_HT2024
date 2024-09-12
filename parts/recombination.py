@@ -1,6 +1,6 @@
 import numpy as np
 
-class Recombination(object):
+class Recombination:
     def __init__(self, recombination_strategy):
         recombination_strategies = { 'cut_and_crossfill': self.cut_and_crossfill}
 
