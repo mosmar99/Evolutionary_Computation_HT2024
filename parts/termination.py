@@ -4,6 +4,7 @@ class Termination:
         termination_strategies = { 'iteration_count': self.iteration_count,
                                    'evaluation_count': self.evaluation_count}
         self.termination_strategy = termination_strategies[termination_strategy]
+        self.strategy_name = termination_strategy
     
     def __call__(self, *args, **kwargs):
         return self.termination_strategy(*args, **kwargs)

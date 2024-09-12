@@ -4,6 +4,7 @@ class Fitness_Function:
     def __init__(self, fitness_strategy):
         fitness_strategies = { "conflict_based": self.conflict_based}
         self.fitness_strategy = fitness_strategies[fitness_strategy]
+        self.strategy_name = fitness_strategy
 
     def __call__(self, *args, **kwargs):
         return self.fitness_strategy(*args, **kwargs)
