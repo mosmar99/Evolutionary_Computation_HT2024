@@ -1,13 +1,11 @@
 # IMPORTS
-import numpy as np
-import random as rd
 from init_pop import Init_Pop
 from fitness import Fitness_Function
 from mutation import Mutation
 from recombination import Recombination
 from survival_selection import Survival_Selection
 from parent_selection import Parent_Selection
-from termination import Termination, Evaluation_Count
+from termination import Termination
 from visuals import Visualization
 
 class Genetic_Algorithm:
@@ -27,6 +25,7 @@ class Genetic_Algorithm:
         self.recombination = Recombination(kwargs['recombination_strategy'])
         self.mutation = Mutation(kwargs['mutation_strategy'])
         self.visual = Visualization(kwargs['visualization_strategy'])
+        self.termination = Termination(kwargs['termination_strategy'])
 
     def solve(self):
         is_solution = False
@@ -39,12 +38,11 @@ class Genetic_Algorithm:
             print("\nEvaluation Count: %8d  |  %8f" % (curr_fitness_evaluations, curr_most_fit_individual))
             print("")
 
-        while( not(Termination(Evaluation_Count()).is_terminate(
-                curr_fitness_evaluations=curr_fitness_evaluations,
-                max_fitness_evaluations=self.MAX_FITNESS_EVALUATIONS,
-                curr_iterations=0,  
-                max_iterations=10000, 
-                is_solution=is_solution )) ):
+        while( not(self.termination( curr_fitness_evaluations=curr_fitness_evaluations,
+                                     max_fitness_evaluations=self.MAX_FITNESS_EVALUATIONS,
+                                     curr_iterations=0,  
+                                     max_iterations=10000, 
+                                     is_solution=is_solution )) ):
             
             selected_parents = self.parent_selection(population, self.fitness)
             offspring = self.recombination(selected_parents, self.RECOMBINATION_RATE, self.GENOME_SIZE)
@@ -76,6 +74,7 @@ if __name__ == '__main__':
               'survival_selection_strategy':'del_rep_2',
               'recombination_strategy':     'cut_and_crossfill',
               'mutation_strategy':          'swap_mutation',
+              'termination_strategy':       'evaluation_count',
               'visualization_strategy':     'terminal'}
     
     ga = Genetic_Algorithm(**setup)
