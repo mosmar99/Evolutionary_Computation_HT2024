@@ -26,6 +26,6 @@ class Survival_Selection:
         sum = np.sum(np.apply_along_axis(weighting_func, axis=0, arr=total_population_evals))
         Normalized_weights = np.apply_along_axis(lambda x: weighting_func(x)/sum, axis=0, arr=total_population_evals)
         
-        selected_indecies = np.random.choice(np.arange(len(total_population)), len(population), p=Normalized_weights)
+        selected_indecies = np.random.choice(np.arange(len(total_population)), len(population), p=Normalized_weights, replace=False)
         return total_population[selected_indecies]
 

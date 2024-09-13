@@ -13,7 +13,7 @@ class Parent_Selection:
         parents = []
         for i in range(round(NUM_OFFSPRING/2)):
             np.arange(len(population))
-            random_indecies = np.random.choice(np.arange(len(population)), int(population.shape[0]*TOURNAMENT_GROUP_SIZE), replace=True)
+            random_indecies = np.random.choice(np.arange(len(population)), int(population.shape[0]*TOURNAMENT_GROUP_SIZE), replace=False)
             fitness_values = fitness_function(population[random_indecies])
             sorted_indices = np.argsort(fitness_values)
 
