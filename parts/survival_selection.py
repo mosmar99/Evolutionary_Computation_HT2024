@@ -11,16 +11,21 @@ class Survival_Selection:
         return self.survival_strategy(*args, **kwargs)
     
     def del_rep_2(self, population, offspring, fitness_function):
-        population_list = population.tolist()
-        population_list.sort(key=fitness_function, reverse=False)        
-        population_list[0], population_list[1] = offspring[0], offspring[1]
-        return np.array(population_list)
+        fitness_values = fitness_function(population)
+        sorted_indices = np.argsort(fitness_values)
+        sorted_population = population[sorted_indices]
+        sorted_population[0] = offspring[0]
+        sorted_population[1] = offspring[1]   
+        return sorted_population
     
     def prob_survival(self, population, offspring, fitness_function):
         total_population = np.concatenate([population, offspring])
         total_population_evals = fitness_function(total_population)
-        sum = np.sum(total_population_evals)
-        weights = np.apply_along_axis(lambda x: x/sum, axis=0, arr=total_population_evals)
-        selected_indecies = np.random.choice(np.arange(len(total_population)), len(population), p=weights)
+
+        weighting_func = lambda x: pow(x, 5)
+        sum = np.sum(np.apply_along_axis(weighting_func, axis=0, arr=total_population_evals))
+        Normalized_weights = np.apply_along_axis(lambda x: weighting_func(x)/sum, axis=0, arr=total_population_evals)
+        
+        selected_indecies = np.random.choice(np.arange(len(total_population)), len(population), p=Normalized_weights)
         return total_population[selected_indecies]
 

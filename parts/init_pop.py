@@ -17,7 +17,7 @@ class Init_Pop:
     
     def init_random_permutations(self, GENOME_SIZE, POPULATION_SIZE):
         # Removes the possibility for horizontal conflicts
-        base = np.arange(GENOME_SIZE)
+        base = np.arange(1, GENOME_SIZE + 1)
         permutations = np.empty((POPULATION_SIZE, GENOME_SIZE), dtype=int)
 
         for i in range(POPULATION_SIZE):
