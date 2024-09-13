@@ -1,5 +1,4 @@
 import numpy as np
-import random as rd
 
 class Survival_Selection:
     def __init__(self, survival_selection_strategy):
@@ -20,12 +19,10 @@ class Survival_Selection:
     
     def prob_survival(self, population, offspring, fitness_function):
         total_population = np.concatenate([population, offspring])
-        total_population_evals = fitness_function(total_population)
+        total_population_evals = np.array(fitness_function(np.concatenate([population, offspring])))
 
-        weighting_func = lambda x: pow(x, 5)
-        sum = np.sum(np.apply_along_axis(weighting_func, axis=0, arr=total_population_evals))
-        Normalized_weights = np.apply_along_axis(lambda x: weighting_func(x)/sum, axis=0, arr=total_population_evals)
+        normalized_weights = total_population_evals**5 / np.sum(total_population_evals**5)
         
-        selected_indecies = np.random.choice(np.arange(len(total_population)), len(population), p=Normalized_weights, replace=False)
+        selected_indecies = np.random.choice(np.arange(len(total_population)), len(population), p=normalized_weights, replace=False)
         return total_population[selected_indecies]
 

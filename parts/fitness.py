@@ -2,19 +2,19 @@ import numpy as np
 
 class Fitness_Function:
     def __init__(self, fitness_strategy):
-        self.fitnesslookup = {}
-        fitness_strategies = { "conflict_based": self.conflict_based}
         self.fitness_strategy = fitness_strategies[fitness_strategy]
+        fitness_strategies = { "conflict_based": self.conflict_based}
+        self.fitness_lookup_table = {}
 
     def __call__(self, *args, **kwargs):
         return self.fitness_strategy(*args, **kwargs)
     
     def trylookup(self, individual):
         try:
-            return self.fitnesslookup[hash(individual.tobytes())]
+            return self.fitness_lookup_table[hash(individual.tobytes())]
         except KeyError:
             fitness = conflict_counter(individual)
-            self.fitnesslookup[hash(individual.tobytes())] = fitness
+            self.fitness_lookup_table[hash(individual.tobytes())] = fitness
             return fitness
         
     # returns an fitness array of current population (may be 1 individual in population or more) 
