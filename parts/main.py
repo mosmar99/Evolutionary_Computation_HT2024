@@ -66,7 +66,7 @@ class Genetic_Algorithm:
 if __name__ == '__main__':
     setup = { 'GENOME_SIZE':                8,
               'POPULATION_SIZE':            100,
-              'NUM_OFFSPRING':              2,
+              'NUM_OFFSPRING':              10,
               'RECOMBINATION_RATE':         0.70,
               'MUTATION_RATE':              0.8,
               'MAX_FITNESS_EVALUATIONS':    10000,
@@ -74,7 +74,7 @@ if __name__ == '__main__':
               'initialization_strategy':    'random_permutations',
               'fitness_strategy':           'conflict_based',
               'parent_selection_strategy':  'tournament',
-              'survival_selection_strategy':'del_rep_2',
+              'survival_selection_strategy':'prob_survival',
               'recombination_strategy':     'cut_and_crossfill',
               'mutation_strategy':          'swap_mutation',
               'termination_strategy':       'evaluation_count',
