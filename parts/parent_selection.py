@@ -1,5 +1,4 @@
 import numpy as np
-import random as rd
 
 class Parent_Selection:
     def __init__(self, parent_selection_strategy):
@@ -11,11 +10,13 @@ class Parent_Selection:
 
     def tournament(self, population, NUM_OFFSPRING, TOURNAMENT_GROUP_SIZE, fitness_function):
         parents = []
-        for i in range(round(NUM_OFFSPRING/2)):
-            candidate_indecies = np.random.choice(population.shape[0], int(population.shape[0]*TOURNAMENT_GROUP_SIZE), replace=True)
-            sorted_candidates = sorted(population[candidate_indecies], key=lambda idx: fitness_function(population[idx]), reverse=True)
+        for _ in range(round(NUM_OFFSPRING/2)):
+            np.arange(len(population))
+            random_indecies = np.random.choice(np.arange(len(population)), int(population.shape[0]*TOURNAMENT_GROUP_SIZE), replace=False)
+            fitness_values = fitness_function(population[random_indecies])
+            sorted_indices = np.argsort(fitness_values)
 
-            parents.append((sorted_candidates[0], sorted_candidates[1]))
+            parents.append((population[sorted_indices[0]], population[sorted_indices[1]]))
 
         return parents
     

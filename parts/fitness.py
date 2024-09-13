@@ -4,19 +4,28 @@ class Fitness_Function:
     def __init__(self, fitness_strategy):
         fitness_strategies = { "conflict_based": self.conflict_based}
         self.fitness_strategy = fitness_strategies[fitness_strategy]
+        self.fitness_lookup_table = {}
 
     def __call__(self, *args, **kwargs):
         return self.fitness_strategy(*args, **kwargs)
     
+    def trylookup(self, individual):
+        try:
+            return self.fitness_lookup_table[hash(individual.tobytes())]
+        except KeyError:
+            fitness = conflict_counter(individual)
+            self.fitness_lookup_table[hash(individual.tobytes())] = fitness
+            return fitness
+        
     # returns an fitness array of current population (may be 1 individual in population or more) 
     def conflict_based(self, population, genome_size):
         fitness_evals = []
         denominator = (genome_size * (genome_size - 1)) / 2
         if(np.array(population).ndim == 1):
-                fitness_evals.append(1 - conflict_counter(population) / denominator) 
+                fitness_evals.append(1 - self.trylookup(population) / denominator) 
         elif(np.array(population).ndim == 2):
             for i in range(len(population)):
-                fitness_evals.append(1 - conflict_counter(population[i]) / denominator) 
+                fitness_evals.append(1 - self.trylookup(population[i]) / denominator) 
         return fitness_evals
     
 def conflict_counter(individual):

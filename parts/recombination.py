@@ -2,7 +2,8 @@ import numpy as np
 
 class Recombination:
     def __init__(self, recombination_strategy):
-        recombination_strategies = { 'cut_and_crossfill': self.cut_and_crossfill,
+        recombination_strategies = { 'even_cut_and_crossfill': self.even_cut_and_crossfill,
+                                    'one_point_crossover': self.one_point_crossover,
                                     'two_point_crossover': self.two_point_crossover}
 
         self.recombination_strategy = recombination_strategies[recombination_strategy]
@@ -27,10 +28,24 @@ class Recombination:
             return parents
     
     # at crossover point (cut_index), cutt both parents DNA and crossfill
-    def cut_and_crossfill(self, dad, mom, GENOME_SIZE):
+    def even_cut_and_crossfill(self, dad, mom, GENOME_SIZE):
         child_one = []
         child_two = []
         cut_index = GENOME_SIZE/2
+        for i in range(GENOME_SIZE):
+            if(i < cut_index):
+                child_one.append(dad[i])
+                child_two.append(mom[i])
+            else:
+                child_one.append(mom[i])
+                child_two.append(dad[i])
+        return [child_one, child_two]
+
+    # at crossover point (cut_index), cutt both parents DNA and crossfill
+    def one_point_crossover(self, dad, mom, GENOME_SIZE):
+        child_one = []
+        child_two = []
+        cut_index = np.random.randint(1, GENOME_SIZE - 1)
         for i in range(GENOME_SIZE):
             if(i < cut_index):
                 child_one.append(dad[i])
