@@ -44,8 +44,8 @@ def eval_fitness(population):
     return fitness_evals
 
 # Select the best 2 selected_parents from a random group of 5 individuals
-def parent_selection(population):
-    candidates = rd.sample(list(population), 5)
+def parent_selection(population, group_size):
+    candidates = rd.sample(list(population), group_size)
     candidates.sort(key=eval_fitness, reverse=True)
     return candidates[0], candidates[1]
 
@@ -119,7 +119,11 @@ def visualize_board(individual):
 def genetic_algorithm():
     is_solution = False
     CURR_FITNESS_EVALUATIONS  = 0
+    tournament_group_size = 10
+
     population = init_population(GENOME_SIZE, POPULATION_SIZE)
+
+    print(population[0])
 
     if CURR_FITNESS_EVALUATIONS == 0:
         curr_most_fit_individual = max(eval_fitness(population))
@@ -127,7 +131,7 @@ def genetic_algorithm():
         print("")
 
     while( not(termination_condition(CURR_FITNESS_EVALUATIONS, MAX_FITNESS_EVALUATIONS, is_solution)) ):
-        selected_parents = parent_selection(population)
+        selected_parents = parent_selection(population, tournament_group_size)
         offspring = recombination(selected_parents, RECOMBINATION_RATE)
         mutated_offspring = [swap_mutation(child, MUTATION_RATE, GENOME_SIZE) for child in offspring]
         offspring_fitness = eval_fitness(mutated_offspring)

@@ -16,6 +16,7 @@ class Genetic_Algorithm:
         self.RECOMBINATION_RATE = kwargs['RECOMBINATION_RATE']
         self.MUTATION_RATE = kwargs['MUTATION_RATE']
         self.MAX_FITNESS_EVALUATIONS = kwargs['MAX_FITNESS_EVALUATIONS']
+        self.TOURNAMENT_GROUP_SIZE = kwargs['TOURNAMENT_GROUP_SIZE']
 
         self.init = Init_Pop(kwargs['initialization_strategy'])
 
@@ -45,7 +46,7 @@ class Genetic_Algorithm:
                                      max_iterations=10000, 
                                      is_solution=is_solution )) ):
             
-            selected_parents = self.parent_selection(population, self.NUM_OFFSPRING, self.fitness)
+            selected_parents = self.parent_selection(population, self.NUM_OFFSPRING, self.TOURNAMENT_GROUP_SIZE, self.fitness)
             offspring = self.recombination(selected_parents, self.RECOMBINATION_RATE, self.GENOME_SIZE)
             mutated_offspring = self.mutation(offspring, self.MUTATION_RATE, self.GENOME_SIZE)
             offspring_fitness = self.fitness(mutated_offspring)
@@ -69,9 +70,10 @@ if __name__ == '__main__':
               'RECOMBINATION_RATE':         0.70,
               'MUTATION_RATE':              0.8,
               'MAX_FITNESS_EVALUATIONS':    10000,
+              'TOURNAMENT_GROUP_SIZE':      0.1, 
               'initialization_strategy':    'random_permutations',
               'fitness_strategy':           'conflict_based',
-              'parent_selection_strategy':  'tournament_2_5',
+              'parent_selection_strategy':  'tournament',
               'survival_selection_strategy':'del_rep_2',
               'recombination_strategy':     'cut_and_crossfill',
               'mutation_strategy':          'swap_mutation',
