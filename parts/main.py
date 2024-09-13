@@ -28,20 +28,6 @@ class Genetic_Algorithm:
         self.visual = Visualization(kwargs['visualization_strategy'])
         self.termination = Termination(kwargs['termination_strategy'])
 
-        evolution_strategies = { 'standard_evolve': self.standard_evolve }
-        self.evolution_strategy = evolution_strategies[kwargs['evolution_strategy']]
-
-    def evolve(self, population):
-        self.evolution_strategy(population)
-
-    def standard_evolve(self, population):
-        selected_parents = self.parent_selection(population, self.NUM_OFFSPRING, self.fitness)
-        offspring = self.recombination(selected_parents, self.RECOMBINATION_RATE, self.GENOME_SIZE)
-        mutated_offspring = self.mutation(offspring, self.MUTATION_RATE, self.GENOME_SIZE)
-        offspring_fitness = self.fitness(mutated_offspring)
-        curr_fitness_evaluations += len(offspring_fitness)
-        population = self.survival_selection(population, mutated_offspring, self.fitness)
-
     def solve(self):
         is_solution = False
         curr_fitness_evaluations = 0
@@ -59,7 +45,12 @@ class Genetic_Algorithm:
                                      max_iterations=10000, 
                                      is_solution=is_solution )) ):
             
-            self.evolve(population)
+            selected_parents = self.parent_selection(population, self.NUM_OFFSPRING, self.fitness)
+            offspring = self.recombination(selected_parents, self.RECOMBINATION_RATE, self.GENOME_SIZE)
+            mutated_offspring = self.mutation(offspring, self.MUTATION_RATE, self.GENOME_SIZE)
+            offspring_fitness = self.fitness(mutated_offspring)
+            curr_fitness_evaluations += len(offspring_fitness)
+            population = self.survival_selection(population, mutated_offspring, self.fitness)
 
             if curr_fitness_evaluations % 500 == 0:
                 curr_most_fit_individual = max(self.fitness(population))
