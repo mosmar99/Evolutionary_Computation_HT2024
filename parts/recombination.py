@@ -4,7 +4,8 @@ class Recombination:
     def __init__(self, recombination_strategy):
         recombination_strategies = { 'even_cut_and_crossfill': self.even_cut_and_crossfill,
                                     'one_point_crossover': self.one_point_crossover,
-                                    'two_point_crossover': self.two_point_crossover}
+                                    'two_point_crossover': self.two_point_crossover,
+                                    'partially_mapped_crossover': self.partially_mapped_crossover}
 
         self.recombination_strategy = recombination_strategies[recombination_strategy]
 
@@ -73,4 +74,29 @@ class Recombination:
                 child_two[idx] = dad[idx]
 
         return [child_one, child_two]
+    
+    def partially_mapped_crossover(self, dad, mom, GENOME_SIZE):
+        child_one = [0] * GENOME_SIZE
+        child_two = [0] * GENOME_SIZE
+
+        random_indecies = np.random.choice(GENOME_SIZE, 2, replace=False) + 1
+        startidx, stopidx = np.sort(random_indecies)
+        mapping = {}
+
+        for idx in range(GENOME_SIZE):
+            if startidx <= idx <= stopidx:
+                child_one[idx] = dad[idx]
+                child_two[idx] = mom[idx]
+                mapping[dad[idx]] = mom[idx]
+            else:
+                child_one[idx] = mom[idx]
+                child_two[idx] = dad[idx]
+
+        for dmap, mmap in mapping.items():
+            indexc1 = np.where(child_one==dmap)[0][0]
+            indexc2 = np.where(child_two==mmap)[0][0]
+            child_one[indexc1] = mmap
+            child_two[indexc2] = dmap
+
+        return np.array([child_one, child_two])
     

@@ -3,7 +3,8 @@ import numpy as np
 class Mutation:
     def __init__(self, mutation_strategy):
         mutation_strategies = {'swap_mutation': self.swap_mutation,
-                               'inversion_mutation': self.inversion_mutation}
+                               'inversion_mutation': self.inversion_mutation,
+                               'duplicate_replacement': self.duplicate_replacement}
         
         self.mutation_strategy = mutation_strategies[mutation_strategy]
     
@@ -37,5 +38,19 @@ class Mutation:
         # Inverse between selected indecies
         for i in range(stopidx - startidx + 1):
             individual[startidx+i] = individual_copy[stopidx-i]
+
+        return individual
+    
+    # Replaces one duplicate values with missing ones.
+    def duplicate_replacement(self, individual, GENOME_SIZE):
+        valid_permutation = np.arange(1, GENOME_SIZE + 1)
+        unique, counts = np.unique(individual, return_counts=True)
+
+        duplicates = unique[counts > 1]
+        missing_values = np.setdiff1d(valid_permutation, individual)
+
+        for duplicate, missing in zip(duplicates, missing_values):
+            duplicate_indices = np.where(individual == duplicate)[0]
+            individual[duplicate_indices[1]] = missing
 
         return individual
