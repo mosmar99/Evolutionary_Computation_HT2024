@@ -64,19 +64,19 @@ class Genetic_Algorithm:
         self.visual(best_individual, self.fitness)
 
 if __name__ == '__main__':
-    setup = { 'GENOME_SIZE':                8,
-              'POPULATION_SIZE':            100,
+    setup = { 'GENOME_SIZE':                15,
+              'POPULATION_SIZE':            1000,
               'NUM_OFFSPRING':              20,
               'RECOMBINATION_RATE':         0.80,
-              'MUTATION_RATE':              0.80,
-              'MAX_FITNESS_EVALUATIONS':    10000,
+              'MUTATION_RATE':              0.05,
+              'MAX_FITNESS_EVALUATIONS':    100000,
               'TOURNAMENT_GROUP_SIZE':      0.2, 
               'initialization_strategy':    'random',
               'fitness_strategy':           'conflict_based',
               'parent_selection_strategy':  'tournament',
               'survival_selection_strategy':'prob_survival',
               'recombination_strategy':     'two_point_crossover',
-              'mutation_strategy':          'swap_mutation',
+              'mutation_strategy':          'inversion_mutation',
               'termination_strategy':       'evaluation_count',
               'visualization_strategy':     'terminal',
               'evolution_strategy':         'standard_evolve'}

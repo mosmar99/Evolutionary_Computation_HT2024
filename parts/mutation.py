@@ -2,7 +2,8 @@ import numpy as np
 
 class Mutation:
     def __init__(self, mutation_strategy):
-        mutation_strategies = {'swap_mutation': self.swap_mutation}
+        mutation_strategies = {'swap_mutation': self.swap_mutation,
+                               'inversion_mutation': self.inversion_mutation}
         
         self.mutation_strategy = mutation_strategies[mutation_strategy]
     
@@ -26,4 +27,15 @@ class Mutation:
         # swap the genes contents of the two genes at the specified indices
         individual[gene_idx1] = gene2
         individual[gene_idx2] = gene1
+        return individual
+
+    def inversion_mutation(self, individual, GENOME_SIZE):
+        # get indices of 2 random genes in the genome not including the edges
+        random_indecies = np.random.choice(GENOME_SIZE-2, 2, replace=False) + 1
+        startidx, stopidx = np.sort(random_indecies)
+        individual_copy = individual.copy()
+        # Inverse between selected indecies
+        for i in range(stopidx - startidx + 1):
+            individual[startidx+i] = individual_copy[stopidx-i]
+
         return individual
