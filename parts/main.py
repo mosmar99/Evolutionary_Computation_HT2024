@@ -7,6 +7,8 @@ from survival_selection import Survival_Selection
 from parent_selection import Parent_Selection
 from termination import Termination
 from visuals import Visualization
+import numpy as np
+import logging
 
 class Genetic_Algorithm:
     def __init__(self, **kwargs):
@@ -29,14 +31,20 @@ class Genetic_Algorithm:
         self.visual = Visualization(kwargs['visualization_strategy'])
         self.termination = Termination(kwargs['termination_strategy'])
 
+        logging.basicConfig(filename='avg_similarity_log.log', level=logging.INFO, 
+                            format='%(message)s', filemode='w')
+        self.logger = logging.getLogger()
+
     def solve(self):
         is_solution = False
         curr_fitness_evaluations = 0
+        similarity_threshold = 0.4
 
         population = self.init(self.GENOME_SIZE, self.POPULATION_SIZE)
 
         if curr_fitness_evaluations == 0:
             curr_most_fit_individual = max(self.fitness(population))
+            self.logger.info(f"evaluation_count,avg_similarity_score,fitness_score")
             print("\nEvaluation Count: %8d  |  %8f" % (curr_fitness_evaluations, curr_most_fit_individual))
             print("")
 
@@ -49,11 +57,18 @@ class Genetic_Algorithm:
             selected_parents = self.parent_selection(population, self.NUM_OFFSPRING, self.TOURNAMENT_GROUP_SIZE, self.fitness)
             offspring = self.recombination(selected_parents, self.RECOMBINATION_RATE, self.GENOME_SIZE)
             mutated_offspring = self.mutation(offspring, self.MUTATION_RATE, self.GENOME_SIZE)
-            offspring_fitness = self.fitness(mutated_offspring)
-            curr_fitness_evaluations += len(offspring_fitness)
-            population = self.survival_selection(population, mutated_offspring, self.fitness)
 
-            if curr_fitness_evaluations % 500 == 0:
+            population_sample = population[np.random.choice(self.POPULATION_SIZE, int(self.POPULATION_SIZE*0.5), replace=False)]
+            avg_sim = self.fitness_function.avg_similarity(mutated_offspring, population_sample)
+            offspring_fitness = self.fitness(mutated_offspring) 
+            self.logger.info("%d, %f, %f" % (curr_fitness_evaluations, avg_sim, round(np.mean(offspring_fitness), 2)))
+            
+            if (avg_sim < similarity_threshold):
+                curr_fitness_evaluations += len(offspring_fitness)
+                population = self.survival_selection(population, mutated_offspring, self.fitness)
+
+
+            if (curr_fitness_evaluations % 500 == 0):
                 curr_most_fit_individual = max(self.fitness(population))
                 print("Evaluation Count: %8d  |  %8f" % (curr_fitness_evaluations, curr_most_fit_individual))
 
@@ -62,6 +77,7 @@ class Genetic_Algorithm:
 
         best_individual = max(population, key=self.fitness)
         self.visual(best_individual, self.fitness)
+        self.visual.HTML_Plots('avg_similarity_log.log')
 
 if __name__ == '__main__':
     setup = { 'GENOME_SIZE':                8,

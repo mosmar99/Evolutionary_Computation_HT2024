@@ -27,6 +27,25 @@ class Fitness_Function:
             for i in range(len(population)):
                 fitness_evals.append(1 - self.trylookup(population[i]) / denominator) 
         return fitness_evals
+
+    # Function to calculate element-wise similarity between two individuals
+    def element_wise_similarity(self, individual_A, individual_B):
+        individual_A = np.array(individual_A)
+        individual_B = np.array(individual_B)
+        if individual_A.size != individual_B.size and individual_A.shape[0] == individual_B.shape[0]:
+            raise ValueError("Arrays must have the same shape")
+        matches = np.sum(individual_A == individual_B)
+        total = individual_A.size
+        return matches / total
+
+    # Compute average similarity of offspring compared to a sample of the population
+    def avg_similarity(self, offspring, population_sample):
+        total_similarity = 0
+        for ind in population_sample:
+            for child in offspring:
+                total_similarity += self.element_wise_similarity(child, ind)
+        
+        return total_similarity / (len(offspring) * len(population_sample))
     
 def conflict_counter(individual):
     # To Check: 
