@@ -6,6 +6,7 @@ class Init_Pop:
                             'random_permutations': self.init_random_permutations }
         
         self.initialization_strategy = init_strategies[initialization_strategy]
+        self.strategy_name = initialization_strategy
     
     def __call__(self, *args, **kwargs):
         return self.initialization_strategy(*args, **kwargs)

@@ -51,6 +51,7 @@ class Genetic_Algorithm:
             curr_most_fit_individual = max(self.fitness(population))
             print("\nEvaluation Count: %8d  |  %8f" % (curr_fitness_evaluations, curr_most_fit_individual))
             print("")
+            self.print(curr_fitness_evaluations, curr_most_fit_individual)
 
         while( not(self.termination( curr_fitness_evaluations=curr_fitness_evaluations,
                                      max_fitness_evaluations=self.MAX_FITNESS_EVALUATIONS,
@@ -73,6 +74,7 @@ class Genetic_Algorithm:
             if (curr_fitness_evaluations % 500 == 0):
                 curr_most_fit_individual = max(self.fitness(population))
                 print("Evaluation Count: %8d  |  %8f" % (curr_fitness_evaluations, curr_most_fit_individual))
+                self.print(curr_fitness_evaluations, curr_most_fit_individual)
 
             if (max(self.fitness(population)) == 1):
                 is_solution = True
@@ -80,6 +82,27 @@ class Genetic_Algorithm:
         best_individual = max(population, key=self.fitness)
         self.visual(best_individual, self.fitness)
         self.visual.HTML_Plots('avg_similarity_log.log')
+
+    def print(self, evals, most_fit):
+        to_print = {
+            'CURR_FITNESS_EVALUATIONS': evals,
+            'CURR_MOST_FIT_INDIVIDUAL': most_fit,
+            'GENOME_SIZE': self.GENOME_SIZE,
+            'POPULATION_SIZE': self.POPULATION_SIZE,
+            'NUM_OFFSPRING': self.NUM_OFFSPRING,
+            'RECOMBINATION_RATE': self.RECOMBINATION_RATE,
+            'MUTATION_RATE': self.MUTATION_RATE,
+            'MAX_FITNESS_EVALUATIONS': self.MAX_FITNESS_EVALUATIONS,
+
+            'initialization_strategy': self.init.strategy_name,
+            'fitness_strategy': self.fitness_function.strategy_name,
+            'parent_selection_strategy': self.parent_selection.strategy_name,
+            'survival_selection_strategy': self.survival_selection.strategy_name,
+            'recombination_strategy': self.recombination.strategy_name,
+            'mutation_strategy': self.mutation.strategy_name,
+        }
+        self.fileprinter.csv_file(**to_print)
+
 
 if __name__ == '__main__':
     setup = { 'GENOME_SIZE':                15,

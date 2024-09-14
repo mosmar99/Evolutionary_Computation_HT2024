@@ -21,8 +21,7 @@ class File_Handler:
                     'EVALUATIONS','MOST_FIT','GENOME_SIZE', 'POPULATION_SIZE', 'NUM_OFFSPRING',
                     'RECOMBINATION_RATE', 'MUTATION_RATE', 'MAX_FITNESS_EVALUATIONS',
                     'Init Strategy', 'Fitness Function', 'Parent Selection',
-                    'Survival Selection', 'Recombination', 'Mutation',
-                    'Evolution Strategy'
+                    'Survival Selection', 'Recombination', 'Mutation'
                 ])
 
     # For logging information to file in csv format.
@@ -47,6 +46,5 @@ class File_Handler:
                 kwargs.get('parent_selection_strategy', ''),
                 kwargs.get('survival_selection_strategy', ''),
                 kwargs.get('recombination_strategy', ''),
-                kwargs.get('mutation_strategy', ''),
-                kwargs.get('evolution_strategy', '')
+                kwargs.get('mutation_strategy', '')
             ])

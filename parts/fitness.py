@@ -5,6 +5,7 @@ class Fitness_Function:
         fitness_strategies = { "conflict_based": self.conflict_based}
         self.fitness_strategy = fitness_strategies[fitness_strategy]
         self.fitness_lookup_table = {}
+        self.strategy_name = fitness_strategy
 
     def __call__(self, *args, **kwargs):
         return self.fitness_strategy(*args, **kwargs)
