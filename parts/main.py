@@ -9,6 +9,7 @@ from termination import Termination
 from metric import Metric
 from log import Log
 from visuals import Visualization
+from filehandler import File_Handler
 
 class Genetic_Algorithm:
     def __init__(self, **kwargs):
@@ -32,6 +33,12 @@ class Genetic_Algorithm:
         self.termination = Termination(kwargs['termination_strategy'])
         self.metric = Metric(kwargs['metric_strategy'])
         self.logger = Log(kwargs['logging_strategy'])
+
+        self.fileprinter = File_Handler(kwargs['print_type'])
+
+        self.curr_fitness_evaluations = 0
+        self.curr_most_fit_individual = 0
+
 
     def solve(self):
         is_solution = False
@@ -79,8 +86,8 @@ if __name__ == '__main__':
               'POPULATION_SIZE':            1000,
               'NUM_OFFSPRING':              20,
               'RECOMBINATION_RATE':         0.80,
-              'MUTATION_RATE':              0.05,
-              'MAX_FITNESS_EVALUATIONS':    100000,
+              'MUTATION_RATE':              0.10,
+              'MAX_FITNESS_EVALUATIONS':    10000,
               'TOURNAMENT_GROUP_SIZE':      0.2, 
               'initialization_strategy':    'random',
               'fitness_strategy':           'conflict_based',
@@ -90,9 +97,9 @@ if __name__ == '__main__':
               'mutation_strategy':          'inversion_mutation',
               'termination_strategy':       'evaluation_count',
               'visualization_strategy':     'terminal',
-              'evolution_strategy':         'standard_evolve',
               'metric_strategy':            'avg_similarity',
-              'logging_strategy':           'logger'
+              'logging_strategy':           'logger',
+              'print_type':                 'csv_file'
             }
     
     ga = Genetic_Algorithm(**setup)
