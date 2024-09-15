@@ -9,6 +9,7 @@ from termination import Termination
 from metric import Metric
 from log import Log
 from visuals import Visualization
+from filehandler import File_Handler
 
 class Genetic_Algorithm:
     def __init__(self, **kwargs):
@@ -33,6 +34,12 @@ class Genetic_Algorithm:
         self.metric = Metric(kwargs['metric_strategy'])
         self.logger = Log(kwargs['logging_strategy'])
 
+        self.fileprinter = File_Handler(kwargs['print_type'])
+
+        self.curr_fitness_evaluations = 0
+        self.curr_most_fit_individual = 0
+
+
     def solve(self):
         is_solution = False
         curr_fitness_evaluations = 0
@@ -44,6 +51,7 @@ class Genetic_Algorithm:
             curr_most_fit_individual = max(self.fitness(population))
             print("\nEvaluation Count: %8d  |  %8f" % (curr_fitness_evaluations, curr_most_fit_individual))
             print("")
+            self.print(curr_fitness_evaluations, curr_most_fit_individual)
 
         while( not(self.termination( curr_fitness_evaluations=curr_fitness_evaluations,
                                      max_fitness_evaluations=self.MAX_FITNESS_EVALUATIONS,
@@ -66,6 +74,7 @@ class Genetic_Algorithm:
             if (curr_fitness_evaluations % 500 == 0):
                 curr_most_fit_individual = max(self.fitness(population))
                 print("Evaluation Count: %8d  |  %8f" % (curr_fitness_evaluations, curr_most_fit_individual))
+                self.print(curr_fitness_evaluations, curr_most_fit_individual)
 
             if (max(self.fitness(population)) == 1):
                 is_solution = True
@@ -74,13 +83,34 @@ class Genetic_Algorithm:
         self.visual(best_individual, self.fitness)
         self.visual.HTML_Plots('avg_similarity_log.log')
 
+    def print(self, evals, most_fit):
+        to_print = {
+            'CURR_FITNESS_EVALUATIONS': evals,
+            'CURR_MOST_FIT_INDIVIDUAL': most_fit,
+            'GENOME_SIZE': self.GENOME_SIZE,
+            'POPULATION_SIZE': self.POPULATION_SIZE,
+            'NUM_OFFSPRING': self.NUM_OFFSPRING,
+            'RECOMBINATION_RATE': self.RECOMBINATION_RATE,
+            'MUTATION_RATE': self.MUTATION_RATE,
+            'MAX_FITNESS_EVALUATIONS': self.MAX_FITNESS_EVALUATIONS,
+
+            'initialization_strategy': self.init.strategy_name,
+            'fitness_strategy': self.fitness_function.strategy_name,
+            'parent_selection_strategy': self.parent_selection.strategy_name,
+            'survival_selection_strategy': self.survival_selection.strategy_name,
+            'recombination_strategy': self.recombination.strategy_name,
+            'mutation_strategy': self.mutation.strategy_name,
+        }
+        self.fileprinter.csv_file(**to_print)
+
+
 if __name__ == '__main__':
     setup = { 'GENOME_SIZE':                15,
               'POPULATION_SIZE':            1000,
               'NUM_OFFSPRING':              20,
               'RECOMBINATION_RATE':         0.80,
-              'MUTATION_RATE':              0.05,
-              'MAX_FITNESS_EVALUATIONS':    100000,
+              'MUTATION_RATE':              0.10,
+              'MAX_FITNESS_EVALUATIONS':    10000,
               'TOURNAMENT_GROUP_SIZE':      0.2, 
               'initialization_strategy':    'random',
               'fitness_strategy':           'conflict_based',
@@ -90,9 +120,9 @@ if __name__ == '__main__':
               'mutation_strategy':          'inversion_mutation',
               'termination_strategy':       'evaluation_count',
               'visualization_strategy':     'terminal',
-              'evolution_strategy':         'standard_evolve',
               'metric_strategy':            'avg_similarity',
-              'logging_strategy':           'logger'
+              'logging_strategy':           'logger',
+              'print_type':                 'csv_file'
             }
     
     ga = Genetic_Algorithm(**setup)

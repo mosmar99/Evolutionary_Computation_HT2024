@@ -8,6 +8,7 @@ class Recombination:
                                     'partially_mapped_crossover': self.partially_mapped_crossover}
 
         self.recombination_strategy = recombination_strategies[recombination_strategy]
+        self.strategy_name = recombination_strategy
 
     def __call__(self, *args, **kwargs):
         return self.recombine(*args, **kwargs)

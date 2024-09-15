@@ -5,6 +5,7 @@ class Survival_Selection:
         survival_strategies = { 'del_rep_2': self.del_rep_2,
                                 'prob_survival': self.prob_survival }
         self.survival_strategy = survival_strategies[survival_selection_strategy]
+        self.strategy_name = survival_selection_strategy
 
     def __call__(self, *args, **kwargs):
         return self.survival_strategy(*args, **kwargs)

@@ -7,6 +7,7 @@ class Mutation:
                                'duplicate_replacement': self.duplicate_replacement}
         
         self.mutation_strategy = mutation_strategies[mutation_strategy]
+        self.strategy_name = mutation_strategy
     
     def __call__(self, *args, **kwargs):
         return self.mutate(*args, **kwargs)
