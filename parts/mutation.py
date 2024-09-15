@@ -41,7 +41,7 @@ class Mutation:
 
         return individual
     
-    # Replaces one duplicate values with missing ones.
+    # Replaces one duplicate value with missing ones.
     def duplicate_replacement(self, individual, GENOME_SIZE):
         valid_permutation = np.arange(1, GENOME_SIZE + 1)
         unique, counts = np.unique(individual, return_counts=True)
@@ -51,6 +51,6 @@ class Mutation:
 
         for duplicate, missing in zip(duplicates, missing_values):
             duplicate_indices = np.where(individual == duplicate)[0]
-            individual[duplicate_indices[1]] = missing
+            individual[duplicate_indices[np.random.randint(len(duplicate_indices))]] = missing
 
         return individual

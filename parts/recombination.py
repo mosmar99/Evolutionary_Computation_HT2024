@@ -93,10 +93,10 @@ class Recombination:
                 child_two[idx] = dad[idx]
 
         for dmap, mmap in mapping.items():
-            indexc1 = np.where(child_one==dmap)[0][0]
-            indexc2 = np.where(child_two==mmap)[0][0]
-            child_one[indexc1] = mmap
-            child_two[indexc2] = dmap
+            if dmap != mmap:
+                indexc1 = np.where(child_one==dmap)[0][0]
+                indexc2 = np.where(child_two==mmap)[0][0]
+                child_one[indexc1] = mmap
+                child_two[indexc2] = dmap
 
         return np.array([child_one, child_two])
-    
