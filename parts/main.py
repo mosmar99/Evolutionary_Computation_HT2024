@@ -1,4 +1,5 @@
 # IMPORTS
+import config
 from init_pop import Init_Pop
 from fitness import Fitness_Function
 from mutation import Mutation
@@ -11,7 +12,7 @@ from log import Log
 from visuals import Visualization
 from filehandler import File_Handler
 
-class Genetic_Algorithm:
+class Genetic_Algorithm_FE:
     def __init__(self, **kwargs):
         self.GENOME_SIZE = kwargs['GENOME_SIZE'] # N-QUEENS (EX: 'every Queen has a genome size of 8')
         self.POPULATION_SIZE = kwargs['POPULATION_SIZE']
@@ -42,18 +43,19 @@ class Genetic_Algorithm:
 
     def solve(self):
         is_solution = False
-        curr_fitness_evaluations = 0
+        self.curr_fitness_evaluations = 0
+        self.curr_most_fit_individual = 0
         similarity_threshold = 0.4
 
         population = self.init(self.GENOME_SIZE, self.POPULATION_SIZE)
 
-        if curr_fitness_evaluations == 0:
-            curr_most_fit_individual = max(self.fitness(population))
-            print("\nEvaluation Count: %8d  |  %8f" % (curr_fitness_evaluations, curr_most_fit_individual))
+        if self.curr_fitness_evaluations == 0:
+            self.curr_most_fit_individual = max(self.fitness(population))
+            print("\nEvaluation Count: %8d  |  %8f" % (self.curr_fitness_evaluations, self.curr_most_fit_individual))
             print("")
-            self.print(curr_fitness_evaluations, curr_most_fit_individual)
+            self.print(self.curr_fitness_evaluations, self.curr_most_fit_individual)
 
-        while( not(self.termination( curr_fitness_evaluations=curr_fitness_evaluations,
+        while( not(self.termination( curr_fitness_evaluations=self.curr_fitness_evaluations,
                                      max_fitness_evaluations=self.MAX_FITNESS_EVALUATIONS,
                                      curr_iterations=0,  
                                      max_iterations=10000, 
@@ -65,21 +67,21 @@ class Genetic_Algorithm:
 
             avg_sim = self.metric(mutated_offspring, population)
             offspring_fitness = self.fitness(mutated_offspring) 
-            self.logger(curr_fitness_evaluations, avg_sim, offspring_fitness)
-            curr_fitness_evaluations += len(offspring_fitness)
+            self.logger(self.curr_fitness_evaluations, avg_sim, offspring_fitness)
+            self.curr_fitness_evaluations += len(offspring_fitness)
             
             if (avg_sim < similarity_threshold):
                 population = self.survival_selection(population, mutated_offspring, self.fitness)
 
-            if (curr_fitness_evaluations % 500 == 0):
-                curr_most_fit_individual = max(self.fitness(population))
-                print("Evaluation Count: %8d  |  %8f" % (curr_fitness_evaluations, curr_most_fit_individual))
-                self.print(curr_fitness_evaluations, curr_most_fit_individual)
+            if (self.curr_fitness_evaluations % 500 == 0):
+                self.curr_most_fit_individual = max(self.fitness(population))
+                print("Evaluation Count: %8d  |  %8f" % (self.curr_fitness_evaluations, self.curr_most_fit_individual))
+                self.print(self.curr_fitness_evaluations, self.curr_most_fit_individual)
 
             if (max(self.fitness(population)) == 1):
                 avg_sim = self.metric(mutated_offspring, population)
                 sol_fitness = max(self.fitness(population))
-                self.logger(curr_fitness_evaluations, avg_sim, sol_fitness)
+                self.logger(self.curr_fitness_evaluations, avg_sim, sol_fitness)
                 is_solution = True
 
         best_individual = max(population, key=self.fitness)
@@ -108,25 +110,5 @@ class Genetic_Algorithm:
 
 
 if __name__ == '__main__':
-    setup = { 'GENOME_SIZE':                8,
-              'POPULATION_SIZE':            100,
-              'NUM_OFFSPRING':              20,
-              'RECOMBINATION_RATE':         0.80,
-              'MUTATION_RATE':              0.10,
-              'MAX_FITNESS_EVALUATIONS':    10000,
-              'TOURNAMENT_GROUP_SIZE':      0.2, 
-              'initialization_strategy':    'random',
-              'fitness_strategy':           'conflict_based',
-              'parent_selection_strategy':  'tournament',
-              'survival_selection_strategy':'prob_survival',
-              'recombination_strategy':     'partially_mapped_crossover',
-              'mutation_strategy':          'inversion_mutation',
-              'termination_strategy':       'evaluation_count',
-              'visualization_strategy':     'terminal',
-              'metric_strategy':            'avg_similarity',
-              'logging_strategy':           'logger',
-              'print_type':                 'csv_file'
-            }
-    
-    ga = Genetic_Algorithm(**setup)
+    ga = Genetic_Algorithm_FE(**config.setup) # FE = y = Fitness. E = Evals.
     ga.solve()
