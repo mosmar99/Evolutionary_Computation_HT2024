@@ -1,0 +1,5 @@
+EVALUATIONS,MOST_FIT,GENOME_SIZE,POPULATION_SIZE,NUM_OFFSPRING,RECOMBINATION_RATE,MUTATION_RATE,MAX_FITNESS_EVALUATIONS,Init Strategy,Fitness Function,Parent Selection,Survival Selection,Recombination,Mutation
+0,0.8928571428571429,8,100,20,0.8,0.1,10000,random,conflict_based,tournament,prob_survival,partially_mapped_crossover,inversion_mutation
+500,0.9285714285714286,8,100,20,0.8,0.1,10000,random,conflict_based,tournament,prob_survival,partially_mapped_crossover,inversion_mutation
+1000,0.9642857142857143,8,100,20,0.8,0.1,10000,random,conflict_based,tournament,prob_survival,partially_mapped_crossover,inversion_mutation
+1500,0.9642857142857143,8,100,20,0.8,0.1,10000,random,conflict_based,tournament,prob_survival,partially_mapped_crossover,inversion_mutation

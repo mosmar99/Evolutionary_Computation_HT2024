@@ -66,9 +66,9 @@ class Genetic_Algorithm:
             avg_sim = self.metric(mutated_offspring, population)
             offspring_fitness = self.fitness(mutated_offspring) 
             self.logger(curr_fitness_evaluations, avg_sim, offspring_fitness)
+            curr_fitness_evaluations += len(offspring_fitness)
             
             if (avg_sim < similarity_threshold):
-                curr_fitness_evaluations += len(offspring_fitness)
                 population = self.survival_selection(population, mutated_offspring, self.fitness)
 
             if (curr_fitness_evaluations % 500 == 0):
@@ -77,6 +77,9 @@ class Genetic_Algorithm:
                 self.print(curr_fitness_evaluations, curr_most_fit_individual)
 
             if (max(self.fitness(population)) == 1):
+                avg_sim = self.metric(mutated_offspring, population)
+                sol_fitness = max(self.fitness(population))
+                self.logger(curr_fitness_evaluations, avg_sim, sol_fitness)
                 is_solution = True
 
         best_individual = max(population, key=self.fitness)
@@ -105,8 +108,8 @@ class Genetic_Algorithm:
 
 
 if __name__ == '__main__':
-    setup = { 'GENOME_SIZE':                15,
-              'POPULATION_SIZE':            1000,
+    setup = { 'GENOME_SIZE':                8,
+              'POPULATION_SIZE':            100,
               'NUM_OFFSPRING':              20,
               'RECOMBINATION_RATE':         0.80,
               'MUTATION_RATE':              0.10,
