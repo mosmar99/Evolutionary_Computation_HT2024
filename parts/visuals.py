@@ -2,6 +2,7 @@ import numpy as np
 import pandas as pd
 from plotly.subplots import make_subplots
 import plotly.graph_objects as go
+import matplotlib.pyplot as plt
 
 class Visualization:
     def __init__(self, visualization_strategy):
@@ -47,4 +48,36 @@ class Visualization:
         fig.update_yaxes(title_text='Fitness Score', row=1, col=2)
 
         fig.update_layout(height=600, width=1200, title_text="Group 9: Scatter Plots of Genetic Algorithm Metrics")
+        fig.show()
+
+    def strategy_plot(self, file_loc):
+        strategies = []
+        eval_counts = []
+        
+        with open(file_loc, 'r') as file:
+            for line in file:
+                strategy, count = line.strip().split(',')
+                strategies.append(strategy)
+                eval_counts.append(float(count))
+        
+        fig = go.Figure()
+
+        fig.add_trace(go.Bar(
+            x=strategies,
+            y=eval_counts,
+            marker=dict(
+                color=eval_counts,  
+                colorscale='rdbu', 
+                showscale=False 
+            )
+        ))
+
+        fig.update_layout(
+            title='Evaluation Count by Strategy (100 Runs/Strategy)',
+            xaxis_title='Strategy',
+            yaxis_title='Evaluation Count',
+            xaxis_tickangle=-45,
+            template='plotly_white'
+        )
+
         fig.show()

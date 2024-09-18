@@ -7,10 +7,7 @@ from recombination import Recombination
 from survival_selection import Survival_Selection
 from parent_selection import Parent_Selection
 from termination import Termination
-from metric import Metric
-from log import Log
 from visuals import Visualization
-from filehandler import File_Handler
 
 class Genetic_Algorithm_Avg:
     def __init__(self, **kwargs):
@@ -68,6 +65,26 @@ class Genetic_Algorithm_Avg:
         return avg
 
 if __name__ == '__main__':
-    ga = Genetic_Algorithm_Avg(**config.setup)
-    ga.avg_sol(100)
+    iters = 100
+    ga = Genetic_Algorithm_Avg(**config.setup1)
+    eval_count_1 = ga.avg_sol(iters)
+    ga = Genetic_Algorithm_Avg(**config.setup2)
+    eval_count_2 = ga.avg_sol(iters)
+    ga = Genetic_Algorithm_Avg(**config.setup3)
+    eval_count_3 = ga.avg_sol(iters)
+    ga = Genetic_Algorithm_Avg(**config.setup4)
+    eval_count_4 = ga.avg_sol(iters)
+    ga = Genetic_Algorithm_Avg(**config.setup5)
+    eval_count_5 = ga.avg_sol(iters)
+    ga = Genetic_Algorithm_Avg(**config.setup6)
+    eval_count_6 = ga.avg_sol(iters)
 
+    with open('logs/eval_count_by_strategy.log', 'w') as log_file:
+        log_file.write(f"setup_1,{eval_count_1}\n")
+        log_file.write(f"setup_2,{eval_count_2}\n")
+        log_file.write(f"setup_3,{eval_count_3}\n")
+        log_file.write(f"setup_4,{eval_count_4}\n")
+        log_file.write(f"setup_5,{eval_count_5}\n")
+        log_file.write(f"setup_6,{eval_count_6}\n")
+    
+    Visualization('terminal').strategy_plot(config.log_path2)

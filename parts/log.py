@@ -1,5 +1,6 @@
 import numpy as np
 import logging
+import config
 
 class Log():
     def __init__(self, logging_strategy):
@@ -11,7 +12,7 @@ class Log():
 
     def log(self, curr_fitness_evaluations, avg_sim, offspring_fitness):
         offspring_fitness = round(np.mean(offspring_fitness), 2)
-        logging.basicConfig(filename='avg_similarity_log.log', level=logging.INFO, 
+        logging.basicConfig(filename=config.log_path, level=logging.INFO, 
                     format='%(message)s', filemode='w')
         log_obj = logging.getLogger()
         if(curr_fitness_evaluations == 0):

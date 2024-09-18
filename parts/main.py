@@ -86,7 +86,7 @@ class Genetic_Algorithm_FE:
 
         best_individual = max(population, key=self.fitness)
         self.visual(best_individual, self.fitness)
-        self.visual.HTML_Plots('avg_similarity_log.log')
+        self.visual.HTML_Plots(config.log_path)
 
     def print(self, evals, most_fit):
         to_print = {
