@@ -116,7 +116,7 @@ if __name__ == '__main__':
               'fitness_strategy':           'conflict_based',
               'parent_selection_strategy':  'tournament',
               'survival_selection_strategy':'prob_survival',
-              'recombination_strategy':     'two_point_crossover',
+              'recombination_strategy':     'partially_mapped_crossover',
               'mutation_strategy':          'inversion_mutation',
               'termination_strategy':       'evaluation_count',
               'visualization_strategy':     'terminal',

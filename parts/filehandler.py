@@ -6,6 +6,8 @@ class File_Handler:
         self.fitness_strategy = print_types[print_type]
         self.strategy_name = print_type
         self.filenameAndPath = "./" + config.FILE_DIR + "/" + config.FILENAME
+        self.check_dir()
+        self.check_file()
 
     def __call__(self, *args, **kwargs):
         return self.fitness_strategy(*args, **kwargs)
@@ -15,20 +17,16 @@ class File_Handler:
             os.makedirs(config.FILE_DIR)
 
     def check_file(self):
-        if not os.path.exists(self.filenameAndPath):
-            with open(self.filenameAndPath, "w", newline="") as csvfile:
-                csv.writer(csvfile).writerow([
-                    'EVALUATIONS','MOST_FIT','GENOME_SIZE', 'POPULATION_SIZE', 'NUM_OFFSPRING',
-                    'RECOMBINATION_RATE', 'MUTATION_RATE', 'MAX_FITNESS_EVALUATIONS',
-                    'Init Strategy', 'Fitness Function', 'Parent Selection',
-                    'Survival Selection', 'Recombination', 'Mutation'
-                ])
+        with open(self.filenameAndPath, "w", newline="") as csvfile:
+            csv.writer(csvfile).writerow([
+                'EVALUATIONS','MOST_FIT','GENOME_SIZE', 'POPULATION_SIZE', 'NUM_OFFSPRING',
+                'RECOMBINATION_RATE', 'MUTATION_RATE', 'MAX_FITNESS_EVALUATIONS',
+                'Init Strategy', 'Fitness Function', 'Parent Selection',
+                'Survival Selection', 'Recombination', 'Mutation'
+            ])
 
     # For logging information to file in csv format.
     def csv_file(self, **kwargs):
-
-        self.check_dir()
-        self.check_file()
 
         with open(self.filenameAndPath, 'a', newline='') as csvfile:
             csvwriter = csv.writer(csvfile)
