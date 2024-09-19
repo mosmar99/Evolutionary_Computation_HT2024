@@ -5,7 +5,8 @@ class Recombination:
         recombination_strategies = { 'even_cut_and_crossfill': self.even_cut_and_crossfill,
                                     'one_point_crossover': self.one_point_crossover,
                                     'two_point_crossover': self.two_point_crossover,
-                                    'partially_mapped_crossover': self.partially_mapped_crossover}
+                                    'partially_mapped_crossover': self.partially_mapped_crossover,
+                                    'pmx_dp_rm': self.pmx_dp_rm}
 
         self.recombination_strategy = recombination_strategies[recombination_strategy]
         self.strategy_name = recombination_strategy
@@ -101,3 +102,20 @@ class Recombination:
                 child_two[indexc2] = dmap
 
         return np.array([child_one, child_two])
+    
+    def pmx_dp_rm(self, dad, mom, GENOME_SIZE):
+        child_one, child_two = self.partially_mapped_crossover(dad, mom, GENOME_SIZE)
+        return np.array([self.duplicate_replacement(child_one, GENOME_SIZE), self.duplicate_replacement(child_two, GENOME_SIZE)])
+    
+    def duplicate_replacement(self, individual, GENOME_SIZE):
+        valid_permutation = np.arange(1, GENOME_SIZE + 1)
+        unique, counts = np.unique(individual, return_counts=True)
+
+        duplicates = unique[counts > 1]
+        missing_values = np.setdiff1d(valid_permutation, individual)
+
+        for duplicate, missing in zip(duplicates, missing_values):
+            duplicate_indices = np.where(individual == duplicate)[0]
+            individual[duplicate_indices[np.random.randint(len(duplicate_indices))]] = missing
+
+        return individual

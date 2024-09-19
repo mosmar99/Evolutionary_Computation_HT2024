@@ -105,7 +105,7 @@ setup5 = { 'GENOME_SIZE':                  8,
             'fitness_strategy':           'conflict_based',
             'parent_selection_strategy':  'tournament',
             'survival_selection_strategy':'prob_survival',
-            'recombination_strategy':     'two_point_crossover',
+            'recombination_strategy':     'pmx_dp_rm',
             'mutation_strategy':          'inversion_mutation',
             'termination_strategy':       'evaluation_count',
 }
