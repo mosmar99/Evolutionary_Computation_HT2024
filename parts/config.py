@@ -9,6 +9,8 @@ FILENAME = 'log.csv'
 FILE_DIR = 'logs/'
 log_path = 'logs/fit_eval.log'
 log_path2 = 'logs/eval_count_by_strategy.log'
+log_path3 = 'logs/LHS_Setups.log'
+log_path4 = 'logs/LHS_Setups_evals.log'
 
 setup = {   'GENOME_SIZE':                  8,
             'POPULATION_SIZE':            100,
@@ -121,7 +123,23 @@ setup6 = { 'GENOME_SIZE':                  8,
             'fitness_strategy':           'conflict_based',
             'parent_selection_strategy':  'tournament',
             'survival_selection_strategy':'prob_survival',
-            'recombination_strategy':     'partially_mapped_crossover',
+            'recombination_strategy':     'pmx_dp_rm',
             'mutation_strategy':          'inversion_mutation',
             'termination_strategy':       'evaluation_count',
+}
+
+param_ranges = {
+    'POPULATION_SIZE': (50, 200),
+    'NUM_OFFSPRING': (10, 50),
+    'RECOMBINATION_RATE': (0.6, 0.9),
+    'MUTATION_RATE': (0.01, 0.5),
+    'TOURNAMENT_GROUP_SIZE': (0.1, 0.5),
+}
+
+strategy_options = {
+    'initialization_strategy': ['random', 'random_permutations'],
+    'parent_selection_strategy': ['tournament'],
+    'recombination_strategy': ['partially_mapped_crossover', 'two_point_crossover', 'even_cut_and_crossfill'],
+    'mutation_strategy': ['swap_mutation', 'inversion_mutation', 'duplicate_replacement'],
+    'survival_selection_strategy': ['prob_survival'],
 }
