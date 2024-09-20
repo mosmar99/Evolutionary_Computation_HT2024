@@ -1,5 +1,5 @@
 parts/test.py
-parts/__pychace__
+parts/__pychace__/
 parts/logs/
 
 # Byte-compiled / optimized / DLL files

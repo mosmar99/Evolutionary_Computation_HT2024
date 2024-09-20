@@ -73,7 +73,7 @@ class Parameter_Tuning():
             sorted_idx = sorted_arr_indicies[idx]
             setup = topX_setups[idx]
 
-            output_file.write(f"setup{sorted_idx} = {{\n")
+            output_file.write(f"setup{sorted_idx + 1} = {{\n")
             for key, value in constants.items():
                 output_file.write(f"    '{key}': {repr(value)},\n")
             for key, value in setup.items():

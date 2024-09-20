@@ -68,7 +68,7 @@ class Genetic_Algorithm_FE:
             avg_sim = self.metric(mutated_offspring, population)
             offspring_fitness = self.fitness(mutated_offspring) 
             self.logger(self.curr_fitness_evaluations, avg_sim, offspring_fitness)
-            self.curr_fitness_evaluations += len(offspring_fitness)
+            self.curr_fitness_evaluations += (len(offspring_fitness) +  len(population))
             
             if (avg_sim < similarity_threshold):
                 population = self.survival_selection(population, mutated_offspring, self.fitness)

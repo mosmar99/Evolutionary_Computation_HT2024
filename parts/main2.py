@@ -49,7 +49,7 @@ class Genetic_Algorithm_Avg:
             offspring = self.recombination(selected_parents, self.RECOMBINATION_RATE, self.GENOME_SIZE)
             mutated_offspring = self.mutation(offspring, self.MUTATION_RATE, self.GENOME_SIZE)
             offspring_fitness = self.fitness(mutated_offspring) 
-            self.curr_fitness_evaluations += len(offspring_fitness)
+            self.curr_fitness_evaluations += (len(offspring_fitness) + len(population))
             population = self.survival_selection(population, mutated_offspring, self.fitness)
 
             if (max(self.fitness(population)) == 1):
@@ -65,26 +65,32 @@ class Genetic_Algorithm_Avg:
         return avg
 
 if __name__ == '__main__':
-    iters = 100
-    ga = Genetic_Algorithm_Avg(**config.setup1)
-    eval_count_1 = ga.avg_sol(iters)
-    ga = Genetic_Algorithm_Avg(**config.setup2)
-    eval_count_2 = ga.avg_sol(iters)
-    ga = Genetic_Algorithm_Avg(**config.setup3)
-    eval_count_3 = ga.avg_sol(iters)
-    ga = Genetic_Algorithm_Avg(**config.setup4)
-    eval_count_4 = ga.avg_sol(iters)
+    iters = 1000
+    # ga = Genetic_Algorithm_Avg(**config.setup1)
+    # eval_count_1 = ga.avg_sol(iters)
+    # print("1/6")
+    # ga = Genetic_Algorithm_Avg(**config.setup2)
+    # eval_count_2 = ga.avg_sol(iters)
+    # print("2/6")
+    # ga = Genetic_Algorithm_Avg(**config.setup3)
+    # eval_count_3 = ga.avg_sol(iters)
+    # print("3/6")
+    # ga = Genetic_Algorithm_Avg(**config.setup4)
+    # eval_count_4 = ga.avg_sol(iters)
+    # print("4/6")
     ga = Genetic_Algorithm_Avg(**config.setup5)
     eval_count_5 = ga.avg_sol(iters)
+    print("5/6")
     ga = Genetic_Algorithm_Avg(**config.setup6)
     eval_count_6 = ga.avg_sol(iters)
+    print("6/6")
 
     with open('logs/eval_count_by_strategy.log', 'w') as log_file:
-        log_file.write(f"setup_1,{eval_count_1}\n")
-        log_file.write(f"setup_2,{eval_count_2}\n")
-        log_file.write(f"setup_3,{eval_count_3}\n")
-        log_file.write(f"setup_4,{eval_count_4}\n")
+        # log_file.write(f"setup_1,{eval_count_1}\n")
+        # log_file.write(f"setup_2,{eval_count_2}\n")
+        # log_file.write(f"setup_3,{eval_count_3}\n")
+        # log_file.write(f"setup_4,{eval_count_4}\n")
         log_file.write(f"setup_5,{eval_count_5}\n")
         log_file.write(f"setup_6,{eval_count_6}\n")
     
-    Visualization('terminal').strategy_plot(config.log_path2)
+    # Visualization('terminal').strategy_plot(config.log_path2, iters)
