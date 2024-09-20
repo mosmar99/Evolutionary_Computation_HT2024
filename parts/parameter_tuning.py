@@ -34,14 +34,56 @@ class Parameter_Tuning():
         
         return setups
     
-    def extract_topX_setups(self,evals_file, setups_file, output_file, top_x):
-        pass
+    def extract_topX_setups(self,evals_file_loc, setups_file_loc, output_file_loc, topX):
+        eval_file = open(evals_file_loc, 'r')
+        evals = []
+        char_eval = []
+        is_comma = False
+        for line in eval_file:
+            is_comma = False
+            char_eval.clear()
+            for char in line:
+                if(is_comma == False):
+                    if(char == ','):
+                        is_comma = True
+                else:
+                    if(char == '.'):
+                        break
+                    char_eval.append(char)
+            evals.append(int(''.join(char_eval)))
+        # get topX evals (lowest eval score)
+        evals = np.array(evals)
+        sorted_arr_indicies = np.argsort(np.array(evals))[:topX]
+        setups = np.array(ast.literal_eval(''.join(open(setups_file_loc).readlines()[3:])))
+        topX_setups = setups[sorted_arr_indicies]
 
+        constants = { 
+            'GENOME_SIZE': 8,
+            'MAX_FITNESS_EVALUATIONS': 10000,
+            'fitness_strategy': 'conflict_based',
+            'termination_strategy': 'evaluation_count',
+            'visualization_strategy': 'terminal',
+            'metric_strategy': 'avg_similarity',
+            'logging_strategy': 'logger',
+            'print_type': 'csv_file'
+        }
+
+        output_file = open(output_file_loc, 'w')
+        for idx in range(topX):
+            sorted_idx = sorted_arr_indicies[idx]
+            setup = topX_setups[idx]
+
+            output_file.write(f"setup{sorted_idx} = {{\n")
+            for key, value in constants.items():
+                output_file.write(f"    '{key}': {repr(value)},\n")
+            for key, value in setup.items():
+                output_file.write(f"    '{key}': {repr(value)},\n")
+            output_file.write("}\n\n")
 
 if __name__ == '__main__':
     pt = Parameter_Tuning('LHS')
-    evals_file = 'logs/LHS_Setups_evals_copy.log'
-    setups_file = 'logs/LHS_Setups_copy.log'
-    output_file = 'topX_configs.py'
-    top_x = 10
-    pt.extract_topX_setups(evals_file, setups_file, output_file, top_x)
+    evals_file_loc = 'logs/LHS_Setups_evals_copy.log'
+    setups_file_loc = 'logs/LHS_Setups_copy.log'
+    output_file_loc = 'topX_setups.py'
+    topX = 10
+    pt.extract_topX_setups(evals_file_loc, setups_file_loc, output_file_loc, topX)

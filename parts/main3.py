@@ -82,7 +82,7 @@ if __name__ == '__main__':
         start_time = time.time()
         for setup_idx, setup in enumerate(setups):
             genetic_algorithm = Genetic_Algorithm_Avg(**setup)
-            setup_eval_count = genetic_algorithm.exp_evals(iters)
+            setup_eval_count = round(genetic_algorithm.exp_evals(iters))
             log_evals.write(f"s_{setup_idx + 1},{setup_eval_count}\n")
             print(f"Loading {((setup_idx * 100) + 1) / setup_count:.0f}%  --({(time.time() - start_time):.2f}sec)")
 
