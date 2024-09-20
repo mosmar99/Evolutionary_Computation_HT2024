@@ -53,7 +53,7 @@ class Genetic_Algorithm_Avg:
             offspring = self.recombination(selected_parents, self.RECOMBINATION_RATE, self.GENOME_SIZE)
             mutated_offspring = self.mutation(offspring, self.MUTATION_RATE, self.GENOME_SIZE)
             offspring_fitness = self.fitness(mutated_offspring) 
-            self.curr_fitness_evaluations += len(offspring_fitness)
+            self.curr_fitness_evaluations += (len(offspring_fitness) + len(population))
             population = self.survival_selection(population, mutated_offspring, self.fitness)
 
             if (max(self.fitness(population)) == 1):
