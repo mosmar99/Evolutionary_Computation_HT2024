@@ -82,8 +82,8 @@ class Parameter_Tuning():
 
 if __name__ == '__main__':
     pt = Parameter_Tuning('LHS')
-    evals_file_loc = 'logs/LHS_Setups_evals_copy.log'
-    setups_file_loc = 'logs/LHS_Setups_copy.log'
+    evals_file_loc = 'logs/LHS_Setups_evals.log'
+    setups_file_loc = 'logs/LHS_Setups.log'
     output_file_loc = 'topX_setups.py'
     topX = 10
     pt.extract_topX_setups(evals_file_loc, setups_file_loc, output_file_loc, topX)
