@@ -1,9 +1,6 @@
-# Ignore log file
-# parts/logs/*.csv
-# parts/avg_similarity_log.log
-
 parts/test.py
 parts/__pychace__
+parts/logs/
 
 # Byte-compiled / optimized / DLL files
 __pycache__/
