@@ -1,6 +1,8 @@
-parts/test.py
-parts/__pychace__/
-parts/logs/
+# Visuals and logs
+*.csv
+*.html
+*.log
+logs/
 
 # Byte-compiled / optimized / DLL files
 __pycache__/
