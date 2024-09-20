@@ -50,7 +50,7 @@ class Visualization:
         fig.update_layout(height=600, width=1200, title_text="Group 9: Scatter Plots of Genetic Algorithm Metrics")
         fig.show()
 
-    def strategy_plot(self, file_loc):
+    def strategy_plot(self, file_loc, runs):
         strategies = []
         eval_counts = []
         
@@ -73,7 +73,7 @@ class Visualization:
         ))
 
         fig.update_layout(
-            title='Evaluation Count by Strategy (100 Runs/Strategy)',
+            title=f'Evaluation Count by Strategy ({runs} Runs/Strategy)',
             xaxis_title='Strategy',
             yaxis_title='Evaluation Count',
             xaxis_tickangle=-45,

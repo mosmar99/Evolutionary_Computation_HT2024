@@ -2,6 +2,9 @@
 # parts/logs/*.csv
 # parts/avg_similarity_log.log
 
+parts/test.py
+parts/__pychace__
+
 # Byte-compiled / optimized / DLL files
 __pycache__/
 *.py[cod]
@@ -12,6 +15,7 @@ __pycache__/
 
 # logging
 logs/log.csv
+parts/logs/strats100_runs100_files
 
 # Distribution / packaging
 .Python

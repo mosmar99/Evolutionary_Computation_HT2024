@@ -106,7 +106,7 @@ class Recombination:
     def pmx_dp_rm(self, dad, mom, GENOME_SIZE):
         child_one, child_two = self.partially_mapped_crossover(dad, mom, GENOME_SIZE)
         return np.array([self.duplicate_replacement(child_one, GENOME_SIZE), self.duplicate_replacement(child_two, GENOME_SIZE)])
-    
+
     def duplicate_replacement(self, individual, GENOME_SIZE):
         valid_permutation = np.arange(1, GENOME_SIZE + 1)
         unique, counts = np.unique(individual, return_counts=True)
