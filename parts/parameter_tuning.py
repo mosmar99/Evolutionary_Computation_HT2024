@@ -36,6 +36,7 @@ class Parameter_Tuning():
     
     def extract_topX_setups(self,evals_file_loc, setups_file_loc, output_file_loc, topX):
         eval_file = open(evals_file_loc, 'r')
+        eval_file = sorted(eval_file, key=lambda x: int(x.split('_')[1].split(',')[0]))
         evals = []
         char_eval = []
         is_comma = False
@@ -72,7 +73,6 @@ class Parameter_Tuning():
         for idx in range(topX):
             sorted_idx = sorted_arr_indicies[idx]
             setup = topX_setups[idx]
-
             output_file.write(f"setup{sorted_idx + 1} = {{\n")
             for key, value in constants.items():
                 output_file.write(f"    '{key}': {repr(value)},\n")
