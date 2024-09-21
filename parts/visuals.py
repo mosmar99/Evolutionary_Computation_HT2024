@@ -81,3 +81,28 @@ class Visualization:
         )
 
         fig.show()
+
+    def graph_space_vs_solutions(self, data_fil_loc):
+        data = pd.read_csv(data_fil_loc)
+
+        n_values = data['n']
+        fractions = data['Fractions']
+
+        plt.figure(figsize=(10, 6))
+        plt.plot(n_values, fractions, marker='o', linestyle='-', color='b')
+
+        plt.yscale('log')
+        plt.gca().yaxis.set_major_formatter(plt.FormatStrFormatter('%.2e'))
+
+        plt.title('N-Queens Problem: Fraction of Solutions vs N')
+        plt.xlabel('N (Genome Size)')
+        plt.ylabel('# Solution/Space')
+
+        plt.grid(True)
+        plt.tight_layout()
+        plt.show()
+
+if __name__ == '__main__':
+    view_obj = Visualization('terminal')
+    view_obj.graph_space_vs_solutions('logs/nqueens_data.log')
+
