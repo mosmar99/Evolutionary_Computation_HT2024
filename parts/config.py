@@ -1,8 +1,8 @@
 # CONSTANTS
 GENOME_SIZE = 8 # N-QUEENS (EX: 'every Queen has a genome size of 8')
 POPULATION_SIZE = 100
-NUM_OFFSPRING = 2
-RECOMBINATION_RATE = 0.70  
+NUM_OFFSPRING_RATE = 2
+RECOMBINAON_RATE = 0.70  
 MUTATION_RATE = 0.8
 MAX_FITNESS_EVALUATIONS = 10000
 FILENAME = 'log.csv'
@@ -14,7 +14,7 @@ log_path4 = 'logs/LHS_Setups_evals.log'
 
 setup = {   'GENOME_SIZE':                  8,
             'POPULATION_SIZE':            100,
-            'NUM_OFFSPRING':              20,
+            'NUM_OFFSPRING_RATE':          20,
             'RECOMBINATION_RATE':         0.80,
             'MUTATION_RATE':              0.10,
             'MAX_FITNESS_EVALUATIONS':    10000,
@@ -34,7 +34,7 @@ setup = {   'GENOME_SIZE':                  8,
 
 setup1 = { 'GENOME_SIZE':                  8,
             'POPULATION_SIZE':            100,
-            'NUM_OFFSPRING':              20,
+            'NUM_OFFSPRING_RATE':          20,
             'RECOMBINATION_RATE':         0.80,
             'MUTATION_RATE':              0.10,
             'MAX_FITNESS_EVALUATIONS':    10000,
@@ -50,7 +50,7 @@ setup1 = { 'GENOME_SIZE':                  8,
 
 setup2 = { 'GENOME_SIZE':                  8,
             'POPULATION_SIZE':            100,
-            'NUM_OFFSPRING':              10,
+            'NUM_OFFSPRING_RATE':          10,
             'RECOMBINATION_RATE':         0.90,
             'MUTATION_RATE':              0.28,
             'MAX_FITNESS_EVALUATIONS':    10000,
@@ -66,7 +66,7 @@ setup2 = { 'GENOME_SIZE':                  8,
 
 setup3 = { 'GENOME_SIZE':                  8,
             'POPULATION_SIZE':            100,
-            'NUM_OFFSPRING':              30,
+            'NUM_OFFSPRING_RATE':          30,
             'RECOMBINATION_RATE':         0.7,
             'MUTATION_RATE':              0.05,
             'MAX_FITNESS_EVALUATIONS':    10000,
@@ -82,7 +82,7 @@ setup3 = { 'GENOME_SIZE':                  8,
 
 setup4 = { 'GENOME_SIZE':                  8,
             'POPULATION_SIZE':            100,
-            'NUM_OFFSPRING':              15,
+            'NUM_OFFSPRING_RATE':          15,
             'RECOMBINATION_RATE':         0.88,
             'MUTATION_RATE':              0.83,
             'MAX_FITNESS_EVALUATIONS':    10000,
@@ -98,7 +98,7 @@ setup4 = { 'GENOME_SIZE':                  8,
 
 setup5 = { 'GENOME_SIZE':                  8,
             'POPULATION_SIZE':            100,
-            'NUM_OFFSPRING':              40,
+            'NUM_OFFSPRING_RATE':          40,
             'RECOMBINATION_RATE':         0.90,
             'MUTATION_RATE':              0.05,
             'MAX_FITNESS_EVALUATIONS':    10000,
@@ -114,7 +114,7 @@ setup5 = { 'GENOME_SIZE':                  8,
 
 setup6 = { 'GENOME_SIZE':                  8,
             'POPULATION_SIZE':            100,
-            'NUM_OFFSPRING':              40,
+            'NUM_OFFSPRING_RATE':          40,
             'RECOMBINATION_RATE':         0.90,
             'MUTATION_RATE':              0.05,
             'MAX_FITNESS_EVALUATIONS':    10000,
@@ -130,7 +130,7 @@ setup6 = { 'GENOME_SIZE':                  8,
 
 param_ranges = {
     'POPULATION_SIZE': (50, 200),
-    'NUM_OFFSPRING': (10, 50),
+    'NUM_OFFSPRING_RATE': (0.1, 0.5),   
     'RECOMBINATION_RATE': (0.6, 0.9),
     'MUTATION_RATE': (0.01, 0.5),
     'TOURNAMENT_GROUP_SIZE': (0.1, 0.8),
