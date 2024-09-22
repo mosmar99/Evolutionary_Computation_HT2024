@@ -59,14 +59,17 @@ class Visualization:
                 strategy, count = line.strip().split(',')
                 strategies.append(strategy)
                 eval_counts.append(float(count))
-        
+
+        sorted_data = sorted(zip(strategies, eval_counts), key=lambda x: x[1])
+        sorted_strategies, sorted_eval_counts = zip(*sorted_data)
+
         fig = go.Figure()
 
         fig.add_trace(go.Bar(
-            x=strategies,
-            y=eval_counts,
+            x=sorted_strategies,
+            y=sorted_eval_counts,
             marker=dict(
-                color=eval_counts,  
+                color=sorted_eval_counts,  
                 colorscale='rdbu', 
                 showscale=False 
             )
@@ -105,4 +108,3 @@ class Visualization:
 if __name__ == '__main__':
     view_obj = Visualization('terminal')
     view_obj.graph_space_vs_solutions('logs/nqueens_data.log')
-
