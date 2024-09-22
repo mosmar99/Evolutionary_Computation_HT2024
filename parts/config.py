@@ -133,13 +133,13 @@ param_ranges = {
     'NUM_OFFSPRING': (10, 50),
     'RECOMBINATION_RATE': (0.6, 0.9),
     'MUTATION_RATE': (0.01, 0.5),
-    'TOURNAMENT_GROUP_SIZE': (0.1, 0.5),
+    'TOURNAMENT_GROUP_SIZE': (0.1, 0.8),
 }
 
 strategy_options = {
-    'initialization_strategy': ['random', 'random_permutations'],
+    'initialization_strategy': ['random_permutations'],
     'parent_selection_strategy': ['tournament'],
-    'recombination_strategy': ['partially_mapped_crossover', 'two_point_crossover', 'even_cut_and_crossfill'],
+    'recombination_strategy': ['partially_mapped_crossover', 'pmx_dp_rm'],
     'mutation_strategy': ['swap_mutation', 'inversion_mutation', 'duplicate_replacement'],
     'survival_selection_strategy': ['prob_survival'],
 }
