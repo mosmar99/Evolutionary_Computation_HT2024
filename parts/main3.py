@@ -1,7 +1,8 @@
-# IMPORTS
 import config
 import time
 import concurrent.futures, multiprocessing
+import numpy as np
+
 from threading import Lock
 from init_pop import Init_Pop
 from fitness import Fitness_Function
@@ -16,7 +17,7 @@ from parameter_tuning import Parameter_Tuning
 class Genetic_Algorithm_Avg:
     def __init__(self, **kwargs):
         # Not included in Parameter Search
-        self.GENOME_SIZE = 8 # N-QUEENS (EX: 'every Queen has a genome size of 8')
+        self.GENOME_SIZE = 16 # N-QUEENS (EX: 'every Queen has a genome size of 8')
         self.MAX_FITNESS_EVALUATIONS = 10000
         self.fitness_function = Fitness_Function('conflict_based')
         self.fitness = lambda population: self.fitness_function(population, self.GENOME_SIZE)
@@ -84,10 +85,15 @@ class Genetic_Algorithm_Avg:
     
 if __name__ == '__main__':
     iters = 100
-    setup_count = 100
+    setup_count = 500
     topX = 10
     pt = Parameter_Tuning('LHS')
     setups = pt.tuning_strategy(setup_count)
+    setups = [
+        {key: value.item() if isinstance(value, np.generic) else value for key, value in setup.items()}
+        for setup in setups
+    ]
+
     
     with open(config.log_path3, 'w') as log_setup:
         log_setup.write(f"iterations per setup: {iters}\namount of setups: {setup_count}\n\n{setups}")
