@@ -16,7 +16,7 @@ class Genetic_Algorithm_FE:
     def __init__(self, **kwargs):
         self.GENOME_SIZE = kwargs['GENOME_SIZE'] # N-QUEENS (EX: 'every Queen has a genome size of 8')
         self.POPULATION_SIZE = kwargs['POPULATION_SIZE']
-        self.NUM_OFFSPRING = kwargs['NUM_OFFSPRING']
+        self.NUM_OFFSPRING_RATE = kwargs['NUM_OFFSPRING_RATE']
         self.RECOMBINATION_RATE = kwargs['RECOMBINATION_RATE']
         self.MUTATION_RATE = kwargs['MUTATION_RATE']
         self.MAX_FITNESS_EVALUATIONS = kwargs['MAX_FITNESS_EVALUATIONS']
@@ -61,7 +61,7 @@ class Genetic_Algorithm_FE:
                                      max_iterations=10000, 
                                      is_solution=is_solution )) ):
             
-            selected_parents = self.parent_selection(population, self.NUM_OFFSPRING, self.TOURNAMENT_GROUP_SIZE, self.fitness)
+            selected_parents = self.parent_selection(population, self.NUM_OFFSPRING_RATE, self.TOURNAMENT_GROUP_SIZE, self.fitness)
             offspring = self.recombination(selected_parents, self.RECOMBINATION_RATE, self.GENOME_SIZE)
             mutated_offspring = self.mutation(offspring, self.MUTATION_RATE, self.GENOME_SIZE)
 
@@ -86,7 +86,7 @@ class Genetic_Algorithm_FE:
 
         best_individual = max(population, key=self.fitness)
         self.visual(best_individual, self.fitness)
-        self.visual.HTML_Plots(config.log_path)
+        self.visual.html_sim_eval(config.log_path)
 
     def print(self, evals, most_fit):
         to_print = {
@@ -94,7 +94,7 @@ class Genetic_Algorithm_FE:
             'CURR_MOST_FIT_INDIVIDUAL': most_fit,
             'GENOME_SIZE': self.GENOME_SIZE,
             'POPULATION_SIZE': self.POPULATION_SIZE,
-            'NUM_OFFSPRING': self.NUM_OFFSPRING,
+            'NUM_OFFSPRING_RATE': self.NUM_OFFSPRING_RATE,
             'RECOMBINATION_RATE': self.RECOMBINATION_RATE,
             'MUTATION_RATE': self.MUTATION_RATE,
             'MAX_FITNESS_EVALUATIONS': self.MAX_FITNESS_EVALUATIONS,

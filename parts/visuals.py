@@ -1,12 +1,16 @@
-import numpy as np
 import pandas as pd
 from plotly.subplots import make_subplots
 import plotly.graph_objects as go
 import matplotlib.pyplot as plt
+import seaborn as sns
 
 class Visualization:
     def __init__(self, visualization_strategy):
-        visualization_strategies = { 'terminal': self.terminal }
+        visualization_strategies = { 'terminal': self.terminal,
+                                     'html_sim_eval': self.html_sim_eval,
+                                     'strategy_plot': self.strategy_plot,
+                                     'graph_space_vs_solutions': self.graph_space_vs_solutions,
+                                     'heatmap': self.heatmap}
         self.visualization_strategy = visualization_strategies[visualization_strategy]
 
     def __call__(self, *args, **kwargs):
@@ -28,7 +32,7 @@ class Visualization:
         print("Solution: ", individual)
         print("\n")
     
-    def HTML_Plots(self, file_loc):
+    def html_sim_eval(self, file_loc):
         fig = make_subplots(rows=1, cols=2)
         df = pd.read_csv(file_loc)
 
@@ -105,6 +109,22 @@ class Visualization:
         plt.tight_layout()
         plt.show()
 
+    def heatmap(self, datafile_loc):
+        df = pd.read_csv(datafile_loc, header=0)
+        fig, axes = plt.subplots(1, 2, figsize=(12, 6))
+        sns.heatmap(df.corr(), annot=True, fmt=".2f", ax=axes[0])
+        axes[0].set_title("Correlation Heatmap of Population Size and Evaluation Count")
+        sns.scatterplot(x="population_size", y="setup_eval_count", data=df, ax=axes[1])
+        axes[1].set_title("Population Size vs Evaluation Count")
+        plt.tight_layout()
+        plt.show()
+
+
 if __name__ == '__main__':
-    view_obj = Visualization('terminal')
-    view_obj.graph_space_vs_solutions('logs/nqueens_data.log')
+    # GET NQUEENS SPACE/SOL GRAPH
+    # view_obj = Visualization('graph_space_vs_solutions')
+    # view_obj('logs/nqueens_data.log')
+    
+    # Get Heatmap
+    view_obj = Visualization('heatmap')
+    view_obj('logs/heatmap_data.log')

@@ -13,7 +13,7 @@ class Genetic_Algorithm_Avg:
     def __init__(self, **kwargs):
         self.GENOME_SIZE = kwargs['GENOME_SIZE'] # N-QUEENS (EX: 'every Queen has a genome size of 8')
         self.POPULATION_SIZE = kwargs['POPULATION_SIZE']
-        self.NUM_OFFSPRING = kwargs['NUM_OFFSPRING']
+        self.NUM_OFFSPRING_RATE = kwargs['NUM_OFFSPRING_RATE']
         self.RECOMBINATION_RATE = kwargs['RECOMBINATION_RATE']
         self.MUTATION_RATE = kwargs['MUTATION_RATE']
         self.MAX_FITNESS_EVALUATIONS = kwargs['MAX_FITNESS_EVALUATIONS']
@@ -45,7 +45,7 @@ class Genetic_Algorithm_Avg:
                                      max_iterations=10000, 
                                      is_solution=is_solution )) ):
             
-            selected_parents = self.parent_selection(population, self.NUM_OFFSPRING, self.TOURNAMENT_GROUP_SIZE, self.fitness)
+            selected_parents = self.parent_selection(population, self.NUM_OFFSPRING_RATE, self.TOURNAMENT_GROUP_SIZE, self.fitness)
             offspring = self.recombination(selected_parents, self.RECOMBINATION_RATE, self.GENOME_SIZE)
             mutated_offspring = self.mutation(offspring, self.MUTATION_RATE, self.GENOME_SIZE)
             offspring_fitness = self.fitness(mutated_offspring) 
@@ -65,7 +65,7 @@ class Genetic_Algorithm_Avg:
         return avg
 
 if __name__ == '__main__':
-    iters = 1000
+    iters = 10
     # ga = Genetic_Algorithm_Avg(**config.setup1)
     # eval_count_1 = ga.avg_sol(iters)
     # print("1/6")
