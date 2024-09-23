@@ -22,7 +22,7 @@ class Parameter_Tuning():
         for sample in samples:
             setup = {}
             for i, (param, (low, high)) in enumerate(config.param_ranges.items()):
-                if (param == "POPULATION_SIZE" or param == "NUM_OFFSPRING"):
+                if (param == "POPULATION_SIZE"):
                     setup[param] = round(low + (high - low) * sample[i])
                 else:
                     setup[param] = round(low + (high - low) * sample[i], 3)
@@ -48,7 +48,7 @@ class Parameter_Tuning():
                     if(char == ','):
                         is_comma = True
                 else:
-                    if(char == '.'):
+                    if(char == '.' or char == ','):
                         break
                     char_eval.append(char)
             evals.append(int(''.join(char_eval)))
@@ -58,23 +58,12 @@ class Parameter_Tuning():
         setups = np.array(ast.literal_eval(''.join(open(setups_file_loc).readlines()[3:])))
         topX_setups = setups[sorted_arr_indicies]
 
-        constants = { 
-            'GENOME_SIZE': 8,
-            'MAX_FITNESS_EVALUATIONS': 10000,
-            'fitness_strategy': 'conflict_based',
-            'termination_strategy': 'evaluation_count',
-            'visualization_strategy': 'terminal',
-            'metric_strategy': 'avg_similarity',
-            'logging_strategy': 'logger',
-            'print_type': 'csv_file'
-        }
-
         output_file = open(output_file_loc, 'w')
         for idx in range(topX):
             sorted_idx = sorted_arr_indicies[idx]
             setup = topX_setups[idx]
             output_file.write(f"setup{sorted_idx + 1} = {{\n")
-            for key, value in constants.items():
+            for key, value in config.constants.items():
                 output_file.write(f"    '{key}': {repr(value)},\n")
             for key, value in setup.items():
                 output_file.write(f"    '{key}': {repr(value)},\n")

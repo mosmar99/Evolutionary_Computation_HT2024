@@ -16,23 +16,23 @@ from parameter_tuning import Parameter_Tuning
 class Genetic_Algorithm_Avg:
     def __init__(self, **kwargs):
         # Not included in Parameter Search
-        self.GENOME_SIZE = 8 # N-QUEENS (EX: 'every Queen has a genome size of 8')
+        self.GENOME_SIZE = 12 # N-QUEENS (EX: 'every Queen has a genome size of 8')
         self.MAX_FITNESS_EVALUATIONS = 10000
         self.fitness_function = Fitness_Function('conflict_based')
         self.fitness = lambda population: self.fitness_function(population, self.GENOME_SIZE)
         self.termination = Termination('evaluation_count')
+        self.NUM_OFFSPRING_RATE = 0.381
+        self.RECOMBINATION_RATE = 0.755
+        self.MUTATION_RATE = 0.306
+        self.TOURNAMENT_GROUP_SIZE = 0.372
+        self.init = Init_Pop('random_permutations')
+        self.parent_selection = Parent_Selection('tournament')
+        self.recombination = Recombination('partially_mapped_crossover')
+        self.mutation = Mutation('duplicate_replacement')
+        self.survival_selection = Survival_Selection('prob_survival')
 
         # Included in Parameter Search
         self.POPULATION_SIZE = kwargs['POPULATION_SIZE']
-        self.NUM_OFFSPRING_RATE = kwargs['NUM_OFFSPRING_RATE']
-        self.RECOMBINATION_RATE = kwargs['RECOMBINATION_RATE']
-        self.MUTATION_RATE = kwargs['MUTATION_RATE']
-        self.TOURNAMENT_GROUP_SIZE = kwargs['TOURNAMENT_GROUP_SIZE']
-        self.init = Init_Pop(kwargs['initialization_strategy'])
-        self.parent_selection = Parent_Selection(kwargs['parent_selection_strategy'])
-        self.recombination = Recombination(kwargs['recombination_strategy'])
-        self.mutation = Mutation(kwargs['mutation_strategy'])
-        self.survival_selection = Survival_Selection(kwargs['survival_selection_strategy'])
 
         self.curr_fitness_evaluations = 0
         self.curr_most_fit_individual = 0
@@ -73,7 +73,7 @@ class Genetic_Algorithm_Avg:
     def worker(setup_idx, setup, iters):
         genetic_algorithm = Genetic_Algorithm_Avg(**setup)
         setup_eval_count = round(genetic_algorithm.exp_evals(iters))
-        return (setup_idx, setup_eval_count)
+        return (setup_idx, setup_eval_count, setup['POPULATION_SIZE'])
     
     @staticmethod
     def get_topX_setups(topX):
@@ -83,20 +83,17 @@ class Genetic_Algorithm_Avg:
         pt.extract_topX_setups(evals_file_loc, setups_file_loc, output_file_loc, topX)
     
 if __name__ == '__main__':
-    iters = 10
-    setup_count = 100
-    topX = 10
+    iters = 7
+    setup_count = 2000
     pt = Parameter_Tuning('LHS')
     setups = pt.tuning_strategy(setup_count)
-    
-    with open(config.log_path3, 'w') as log_setup:
-        log_setup.write(f"iterations per setup: {iters}\namount of setups: {setup_count}\n\n{setups}")
-    print("\n... created and saved setups")
+    print(" --- CREATED SETUPS --- \n")
     
     file_lock = Lock()
     counter = 0
     with concurrent.futures.ProcessPoolExecutor(max_workers=multiprocessing.cpu_count()) as executor:
-        with open(config.log_path4, 'w') as log_evals:
+        with open(config.log_path5, 'w') as log_evals:
+            log_evals.write(f"population_size,setup_eval_count\n")
             start_time = time.time()
             futures = []
             
@@ -105,12 +102,12 @@ if __name__ == '__main__':
                 futures.append(future)
             
             for future in concurrent.futures.as_completed(futures):
-                setup_idx, setup_eval_count = future.result()
+                setup_idx, setup_eval_count, population_size = future.result()
                 
                 with file_lock:
-                    log_evals.write(f"s_{setup_idx + 1},{setup_eval_count}\n")
+                    log_evals.write(f"{population_size},{setup_eval_count}\n")
                     counter = counter + 1
                     print(f"Loading {(counter * 100 / setup_count)}%  --({(time.time() - start_time):.2f}sec)")
 
-    Genetic_Algorithm_Avg.get_topX_setups(topX)
-    Visualization('strategy_plot').strategy_plot(file_loc=config.log_path4, runs=iters)
+    view_obj = Visualization('heatmap')
+    view_obj('logs/heatmap_data.log')
