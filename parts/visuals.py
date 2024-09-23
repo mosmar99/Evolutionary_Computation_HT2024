@@ -1,3 +1,4 @@
+import config
 import pandas as pd
 from plotly.subplots import make_subplots
 import plotly.graph_objects as go
@@ -10,7 +11,8 @@ class Visualization:
                                      'html_sim_eval': self.html_sim_eval,
                                      'strategy_plot': self.strategy_plot,
                                      'graph_space_vs_solutions': self.graph_space_vs_solutions,
-                                     'heatmap': self.heatmap}
+                                     'heatmap': self.heatmap,
+                                     'scatter': self.scatter}
         self.visualization_strategy = visualization_strategies[visualization_strategy]
 
     def __call__(self, *args, **kwargs):
@@ -119,12 +121,32 @@ class Visualization:
         plt.tight_layout()
         plt.show()
 
+    def scatter(self, datafile_loc, x_axis, y_axis):
+        df = pd.read_csv(datafile_loc, header=0)
+        df_sorted = df.sort_values(by=y_axis)
+        threshold = df_sorted[y_axis].quantile(0.05)
+        df_blue = df_sorted[df_sorted[y_axis] > threshold]
+        df_pink = df_sorted[df_sorted[y_axis] <= threshold]
+        
+        plt.scatter(df_blue[x_axis], df_blue[y_axis], color='lightblue', label='bottom 0.95 eval_score')
+        plt.scatter(df_pink[x_axis], df_pink[y_axis], color='pink', label='top 0.05 eval_score')
+        
+        plt.xlabel(x_axis)
+        plt.ylabel(y_axis)
+        plt.title(f"{y_axis} vs. {x_axis}")
+        plt.legend()
+        plt.tight_layout()
+        plt.show()
 
 if __name__ == '__main__':
     # GET NQUEENS SPACE/SOL GRAPH
     # view_obj = Visualization('graph_space_vs_solutions')
     # view_obj('logs/nqueens_data.log')
     
-    # Get Heatmap
-    view_obj = Visualization('heatmap')
-    view_obj('logs/heatmap_data.log')
+    # # Get Heatmap
+    # view_obj = Visualization('heatmap')
+    # view_obj('logs/heatmap_data.log')
+    
+    # Get Trendline
+    view_obj = Visualization('scatter')
+    view_obj(config.log_path6, 'recombination_rate', 'setup_eval_count')

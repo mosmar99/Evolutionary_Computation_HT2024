@@ -6,6 +6,8 @@ log_path2 = 'logs/eval_count_by_strategy.log'
 log_path3 = 'logs/LHS_Setups.log'
 log_path4 = 'logs/LHS_Setups_evals.log'
 log_path5 = 'logs/heatmap_data.log'
+curr_setups_loc = 'logs/curr_setups.log'
+log_path6 = 'logs/diversity_vs_n.log'
 
 # setups
 setup = {   'GENOME_SIZE':                  8,
@@ -124,7 +126,7 @@ setup6 = { 'GENOME_SIZE':                  8,
             'termination_strategy':       'evaluation_count',
 }
 
-## MAIN3
+# # MAIN3
 # param_ranges = {
 #     'POPULATION_SIZE': (50, 200),
 #     'NUM_OFFSPRING_RATE': (0.1, 0.5),   
@@ -153,14 +155,16 @@ setup6 = { 'GENOME_SIZE':                  8,
 # }
 
 param_ranges = {
-    'POPULATION_SIZE': (50, 2000),
+    'RECOMBINATION_RATE': (0.05, 0.95),
 }
 
 strategy_options = {
 }
 
+# for the sake of printing topX
 constants = { 
-    'GENOME_SIZE': 8,
+    'GENOME_SIZE': 7,
+    'POPULATION_SIZE': 100,
     'MAX_FITNESS_EVALUATIONS': 10000,
     'fitness_strategy': 'conflict_based',
     'termination_strategy': 'evaluation_count',
@@ -169,7 +173,6 @@ constants = {
     'logging_strategy': 'logger',
     'print_type': 'csv_file',
     'NUM_OFFSPRING_RATE': 0.381,
-    'RECOMBINATION_RATE': 0.755,
     'MUTATION_RATE': 0.306,
     'TOURNAMENT_GROUP_SIZE': 0.372,
     'initialization_strategy': ['random_permutations'],
