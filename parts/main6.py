@@ -39,15 +39,16 @@ class Genetic_Algorithm:
         self.curr_fitness_evaluations = 0
         self.curr_most_fit_individual = 0
         self.generations = 0
+        self.iters = 42+1
+    
+    def get_population(self):
+        return self.init(self.GENOME_SIZE, self.POPULATION_SIZE)
 
-    def solve(self):
+    def solve_genocide(self, population):
         is_solution = False
         self.curr_fitness_evaluations = 0
         self.curr_most_fit_individual = 0
         self.generations = 0
-
-        population = self.init(self.GENOME_SIZE, self.POPULATION_SIZE)
-        population_copy = population.copy()
 
         # WITH GENOCIDE
         while( not(self.termination( curr_fitness_evaluations=self.curr_fitness_evaluations,
@@ -64,22 +65,25 @@ class Genetic_Algorithm:
             self.curr_fitness_evaluations += (len(offspring_fitness) + len(population))
 
             if (max(self.fitness(population)) == 1):
-                print(f"\n --- GENERATION: {self.generations} --- ", end="")
-                self.visual(max(population, key=self.fitness), self.fitness)
-                break
+                # self.visual(max(population, key=self.fitness), self.fitness)
+                return self.generations
 
             self.curr_most_fit_individual = max(self.fitness(population))
             if self.destroy.check_stagnation(self.curr_most_fit_individual):
-                # print(" --- GENOCIDE APPLIED --- ")
+                # print(" === GENOCIDE APPLIED === ")
                 population = self.destroy.apply_genocide(population, self.fitness)
 
             self.generations += 1
-            # print(f" --- GENERATION: {self.generations} --- ")
+            # print(f" {self.generations}-GENERATION | FITNESS: {self.curr_fitness_evaluations} | MOST_FIT: {self.curr_most_fit_individual}\n", end="")
+        
+        return self.generations
 
+    def solve_peace(self, population_copy):
         is_solution = False
         self.curr_fitness_evaluations = 0
         self.curr_most_fit_individual = 0
         self.generations = 0
+
         # WITHOUT GENOCIDE (SAME INITIAL POPULATION)
         while( not(self.termination( curr_fitness_evaluations=self.curr_fitness_evaluations,
                                      max_fitness_evaluations=self.MAX_FITNESS_EVALUATIONS,
@@ -95,14 +99,16 @@ class Genetic_Algorithm:
             self.curr_fitness_evaluations += (len(offspring_fitness) + len(population_copy))
 
             if (max(self.fitness(population_copy)) == 1):
-                self.visual(max(population_copy, key=self.fitness), self.fitness)
-                print(f" --- GENERATION: {self.generations} --- ")
-                break
+                return self.generations
 
             self.generations += 1
-            if(self.generations % 5 == 0):
-                print(f" --- FITNESS: {self.curr_fitness_evaluations} --- ")
-
+        return self.generations
     
 if __name__ == '__main__':
-    Genetic_Algorithm(**config.setup_genocide).solve()
+    gen_algo = Genetic_Algorithm(**config.setup_genocide)
+    path = config.log_path_geno10
+    with open(path, 'w') as logfile:
+        for _ in range(gen_algo.iters-1):
+            population = gen_algo.get_population()
+            logfile.write(f"{gen_algo.solve_peace(population)},{gen_algo.solve_genocide(population)}\n")
+    gen_algo.visual.lineplot_2col(path)

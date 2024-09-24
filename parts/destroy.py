@@ -34,4 +34,5 @@ class Destroy:
         survivors = population[survivors_indices]
         new_individuals = Init_Pop('random_permutations')(genome_size, num_to_replace)
         new_population = np.concatenate((survivors, new_individuals), axis=0)
+        self.stagnant_generations = 0
         return new_population

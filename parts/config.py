@@ -8,6 +8,12 @@ log_path4 = 'logs/LHS_Setups_evals.log'
 log_path5 = 'logs/heatmap_data.log'
 curr_setups_loc = 'logs/curr_setups.log'
 log_path6 = 'logs/diversity_vs_n.log'
+log_path_geno5 = 'logs/geno_plot5.log'
+log_path_geno6 = 'logs/geno_plot6.log' 
+log_path_geno7 = 'logs/geno_plot7.log' 
+log_path_geno8 = 'logs/geno_plot8.log' 
+log_path_geno9 = 'logs/geno_plot9.log' 
+log_path_geno10 = 'logs/geno_plot10.log' 
 
 # setups
 setup = {   'GENOME_SIZE':                  8,
@@ -182,12 +188,12 @@ setup6 = { 'GENOME_SIZE':                  8,
 #     'survival_selection_strategy': ['prob_survival']
 # }
 
-setup_genocide = {  'GENOME_SIZE':                    8,
+setup_genocide = {  'GENOME_SIZE':                    10,
                     'POPULATION_SIZE':              100,
                     'NUM_OFFSPRING_RATE':           0.2,
                     'RECOMBINATION_RATE':          0.80,
                     'MUTATION_RATE':               0.10,
-                    'MAX_FITNESS_EVALUATIONS':    10000,
+                    'MAX_FITNESS_EVALUATIONS':    12000,
                     'TOURNAMENT_GROUP_SIZE':        0.2, 
                     'MAX_STAGNANT_GENERATIONS':      3,
                     'TOLERANCE':                   1e-2,
