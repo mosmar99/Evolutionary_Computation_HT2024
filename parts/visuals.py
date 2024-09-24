@@ -4,6 +4,7 @@ from plotly.subplots import make_subplots
 import plotly.graph_objects as go
 import matplotlib.pyplot as plt
 import seaborn as sns
+import numpy as np
 
 class Visualization:
     def __init__(self, visualization_strategy):
@@ -135,6 +136,28 @@ class Visualization:
         plt.ylabel(y_axis)
         plt.title(f"{y_axis} vs. {x_axis}")
         plt.legend()
+        plt.tight_layout()
+        plt.show()
+    
+    def lineplot_2col(self, datafile_loc, n):
+        df = pd.read_csv(datafile_loc, header=None, names=['y1', 'y2'])
+        iters = np.arange(1, len(df.y1)+1)
+        fig, axs = plt.subplots(1, 2, figsize=(10, 4))
+        axs[0].plot(iters, df.y1, label='Static', color='blue')
+        axs[0].set_title(f"Static Stagnation: n={n}")
+        axs[0].axhline(y=np.mean(df.y1), color='darkblue', linestyle='--', label=f'Avg. {np.mean(df.y1)}', zorder=1)
+        axs[0].set_xlabel('Iteration')
+        axs[0].set_ylabel('Final Generation Count')
+        axs[0].legend()
+
+        axs[1].plot(iters, df.y2, label='Dynamic', color='green', zorder=0)
+        axs[1].set_title(f"Dynamic Stagnation: n={n}")
+        axs[1].axhline(y=np.mean(df.y2), color='darkgreen', linestyle='--', label=f'Avg. {np.mean(df.y2)}', zorder=1)
+        axs[1].set_xlabel('Iteration')
+        axs[1].set_ylabel('Final Generation Count')
+        axs[1].legend()
+
+        # Display the plots
         plt.tight_layout()
         plt.show()
 

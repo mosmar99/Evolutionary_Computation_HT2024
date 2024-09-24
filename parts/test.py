@@ -46,5 +46,27 @@ def __(np):
     return avg_tourn,
 
 
+@app.cell
+def __(np):
+    def init_random_permutations(self, GENOME_SIZE, POPULATION_SIZE):
+        # Removes the possibility for horizontal conflicts
+        base = np.arange(1, GENOME_SIZE + 1)
+        permutations = np.empty((POPULATION_SIZE, GENOME_SIZE), dtype=int)
+
+        for i in range(POPULATION_SIZE):
+            permutations[i] = np.random.permutation(base)
+
+        return permutations
+    return init_random_permutations,
+
+
+@app.cell
+def __():
+    arr = [[1,2], [1,2]]+[[4,5]]
+    arr
+
+    return arr,
+
+
 if __name__ == "__main__":
     app.run()
