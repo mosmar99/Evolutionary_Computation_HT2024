@@ -14,6 +14,9 @@ log_path_geno7 = 'logs/geno_plot7.log'
 log_path_geno8 = 'logs/geno_plot8.log' 
 log_path_geno9 = 'logs/geno_plot9.log' 
 log_path_geno10 = 'logs/geno_plot10.log' 
+max_vs_mean_geno = 'logs/max_vs_mean_geno.log'
+dynamic_vs_static = 'logs/dynamic_vs_static.log'
+dyn_vs_static_stagn = 'logs/dyn_vs_static_stagn.log'
 
 # setups
 setup = {   'GENOME_SIZE':                  8,
@@ -188,7 +191,7 @@ setup6 = { 'GENOME_SIZE':                  8,
 #     'survival_selection_strategy': ['prob_survival']
 # }
 
-setup_genocide = {  'GENOME_SIZE':                    10,
+setup_genocide = {  'GENOME_SIZE':                    6,
                     'POPULATION_SIZE':              100,
                     'NUM_OFFSPRING_RATE':           0.2,
                     'RECOMBINATION_RATE':          0.80,
@@ -198,6 +201,65 @@ setup_genocide = {  'GENOME_SIZE':                    10,
                     'MAX_STAGNANT_GENERATIONS':      3,
                     'TOLERANCE':                   1e-2,
                     'GENOCIDE_PERC':                0.2,
+                    'initialization_strategy':    'random',
+                    'fitness_strategy':           'conflict_based',
+                    'parent_selection_strategy':  'tournament',
+                    'survival_selection_strategy':'prob_survival',
+                    'recombination_strategy':     'partially_mapped_crossover',
+                    'mutation_strategy':          'inversion_mutation',
+                    'termination_strategy':       'evaluation_count',
+                    'visualization_strategy':     'terminal',
+}
+setup_mean_or_max = {  'GENOME_SIZE':                 6,
+                    'POPULATION_SIZE':              100,
+                    'NUM_OFFSPRING_RATE':           0.2,
+                    'RECOMBINATION_RATE':          0.80,
+                    'MUTATION_RATE':               0.1,
+                    'MAX_FITNESS_EVALUATIONS':    12000,
+                    'TOURNAMENT_GROUP_SIZE':        0.2, 
+                    'MAX_STAGNANT_GENERATIONS':      3,
+                    'TOLERANCE':                   1e-2,
+                    'GENOCIDE_PERC':                0.2,
+                    'initialization_strategy':    'random',
+                    'fitness_strategy':           'conflict_based',
+                    'parent_selection_strategy':  'tournament',
+                    'survival_selection_strategy':'prob_survival',
+                    'recombination_strategy':     'partially_mapped_crossover',
+                    'mutation_strategy':          'inversion_mutation',
+                    'termination_strategy':       'evaluation_count',
+                    'visualization_strategy':     'terminal',
+}
+
+setup_dynamic = {  'GENOME_SIZE':                     6,
+                    'POPULATION_SIZE':              100,
+                    'NUM_OFFSPRING_RATE':           0.2,
+                    'RECOMBINATION_RATE':          0.90,
+                    'MUTATION_RATE':               0.20,
+                    'MAX_FITNESS_EVALUATIONS':    12000,
+                    'TOURNAMENT_GROUP_SIZE':        0.2, 
+                    'MAX_STAGNANT_GENERATIONS':      3,
+                    'TOLERANCE':                   1e-2,
+                    'GENOCIDE_PERC':                0.2,
+                    'initialization_strategy':    'random',
+                    'fitness_strategy':           'conflict_based',
+                    'parent_selection_strategy':  'tournament',
+                    'survival_selection_strategy':'prob_survival',
+                    'recombination_strategy':     'partially_mapped_crossover',
+                    'mutation_strategy':          'inversion_mutation',
+                    'termination_strategy':       'evaluation_count',
+                    'visualization_strategy':     'terminal',
+}
+
+setup_dyn_stagn = {  'GENOME_SIZE':                   7,
+                    'POPULATION_SIZE':              100,
+                    'NUM_OFFSPRING_RATE':           0.2,
+                    'RECOMBINATION_RATE':          0.90,
+                    'MUTATION_RATE':               0.20,
+                    'MAX_FITNESS_EVALUATIONS':    30000,
+                    'TOURNAMENT_GROUP_SIZE':        0.2, 
+                    'MAX_STAGNANT_GENERATIONS':      3,
+                    'TOLERANCE':                   1e-2,
+                    'GENOCIDE_PERC':                0.3,
                     'initialization_strategy':    'random',
                     'fitness_strategy':           'conflict_based',
                     'parent_selection_strategy':  'tournament',

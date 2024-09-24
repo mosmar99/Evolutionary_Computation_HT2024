@@ -38,12 +38,49 @@ class Genetic_Algorithm:
         self.curr_fitness_evaluations = 0
         self.curr_most_fit_individual = 0
         self.generations = 0
-        self.iters = 42+1
+        self.iters = 100+1
     
     def get_population(self):
         return self.init(self.GENOME_SIZE, self.POPULATION_SIZE)
 
-    def solve_genocide(self, population):
+    def solve_dynamic(self, population):
+        is_solution = False
+        self.curr_fitness_evaluations = 0
+        self.curr_most_fit_individual = 0
+        self.generations = 0
+
+        # WITH GENOCIDE
+        while( not(self.termination( curr_fitness_evaluations=self.curr_fitness_evaluations,
+                                     max_fitness_evaluations=self.MAX_FITNESS_EVALUATIONS,
+                                     curr_iterations=0,  
+                                     max_iterations=10000, 
+                                     is_solution=is_solution )) ):
+            
+            # set both at expected infimum to begin with
+            exploration_factor = max(0.1, 1 - (self.GENOME_SIZE / (self.GENOME_SIZE + self.generations))) # declines to its min: 1.0 -> 0.1
+            exploitation_factor = max(0.1, 1-exploration_factor) # grows to its max: 0.1 -> 1.0
+
+            dynamic_recombination_rate = self.RECOMBINATION_RATE * exploration_factor 
+            dynamic_mutation_rate = self.MUTATION_RATE * exploitation_factor
+            
+            selected_parents = self.parent_selection(population, self.NUM_OFFSPRING_RATE, self.TOURNAMENT_GROUP_SIZE, self.fitness)
+            offspring = self.recombination(selected_parents, dynamic_recombination_rate, self.GENOME_SIZE)
+            mutated_offspring = self.mutation(offspring, dynamic_mutation_rate, self.GENOME_SIZE)
+            offspring_fitness = self.fitness(mutated_offspring) 
+            population = self.survival_selection(population, mutated_offspring, self.fitness)
+            self.curr_fitness_evaluations += (len(offspring_fitness) + len(population))
+
+            if (max(self.fitness(population)) == 1):
+                return self.generations
+
+            self.curr_most_fit_individual = max(self.fitness(population))
+            if self.destroy.check_stagnation(self.curr_most_fit_individual):
+                population = self.destroy.apply_genocide(population, self.GENOCIDE_PERC, self.fitness)
+
+            self.generations += 1
+        return self.generations
+
+    def solve_static(self, population):
         is_solution = False
         self.curr_fitness_evaluations = 0
         self.curr_most_fit_individual = 0
@@ -64,50 +101,20 @@ class Genetic_Algorithm:
             self.curr_fitness_evaluations += (len(offspring_fitness) + len(population))
 
             if (max(self.fitness(population)) == 1):
-                # self.visual(max(population, key=self.fitness), self.fitness)
                 return self.generations
 
             self.curr_most_fit_individual = max(self.fitness(population))
             if self.destroy.check_stagnation(self.curr_most_fit_individual):
-                # print(" === GENOCIDE APPLIED === ")
                 population = self.destroy.apply_genocide(population, self.GENOCIDE_PERC, self.fitness)
-
-            self.generations += 1
-            # print(f" {self.generations}-GENERATION | FITNESS: {self.curr_fitness_evaluations} | MOST_FIT: {self.curr_most_fit_individual}\n", end="")
-        
-        return self.generations
-
-    def solve_peace(self, population_copy):
-        is_solution = False
-        self.curr_fitness_evaluations = 0
-        self.curr_most_fit_individual = 0
-        self.generations = 0
-
-        # WITHOUT GENOCIDE (SAME INITIAL POPULATION)
-        while( not(self.termination( curr_fitness_evaluations=self.curr_fitness_evaluations,
-                                     max_fitness_evaluations=self.MAX_FITNESS_EVALUATIONS,
-                                     curr_iterations=0,  
-                                     max_iterations=10000, 
-                                     is_solution=is_solution )) ):
-            
-            selected_parents = self.parent_selection(population_copy, self.NUM_OFFSPRING_RATE, self.TOURNAMENT_GROUP_SIZE, self.fitness)
-            offspring = self.recombination(selected_parents, self.RECOMBINATION_RATE, self.GENOME_SIZE)
-            mutated_offspring = self.mutation(offspring, self.MUTATION_RATE, self.GENOME_SIZE)
-            offspring_fitness = self.fitness(mutated_offspring) 
-            population_copy = self.survival_selection(population_copy, mutated_offspring, self.fitness)
-            self.curr_fitness_evaluations += (len(offspring_fitness) + len(population_copy))
-
-            if (max(self.fitness(population_copy)) == 1):
-                return self.generations
 
             self.generations += 1
         return self.generations
     
 if __name__ == '__main__':
-    gen_algo = Genetic_Algorithm(**config.setup_genocide)
-    path = config.log_path_geno8
+    gen_algo = Genetic_Algorithm(**config.setup_dynamic)
+    path = config.dynamic_vs_static
     with open(path, 'w') as logfile:
         for _ in range(gen_algo.iters-1):
             population = gen_algo.get_population()
-            logfile.write(f"{gen_algo.solve_peace(population)},{gen_algo.solve_genocide(population)}\n")
+            logfile.write(f"{gen_algo.solve_static(population)},{gen_algo.solve_dynamic(population)}\n")
     gen_algo.visual.lineplot_2col(path, gen_algo.GENOME_SIZE)

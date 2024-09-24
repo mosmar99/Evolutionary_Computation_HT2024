@@ -2,10 +2,9 @@ import numpy as np
 from init_pop import Init_Pop
 
 class Destroy:
-    def __init__(self, max_stagnant_generations, tolerance, genocide_perc):
+    def __init__(self, max_stagnant_generations, tolerance):
         self.max_stagnant_generations = max_stagnant_generations
         self.tolerance = tolerance
-        self.genocide_perc = genocide_perc
         self.old_champion = None
         self.stagnant_generations = 0
 
@@ -24,9 +23,9 @@ class Destroy:
             self.stagnant_generations += 1
             return self.stagnant_generations >= self.max_stagnant_generations
 
-    def apply_genocide(self, population, fitness_function):
+    def apply_genocide(self, population, genocide_perc, fitness_function):
         genome_size = population.shape[1]
-        num_to_replace = int(len(population) * self.genocide_perc)
+        num_to_replace = int(len(population) * genocide_perc)
         num_to_keep = len(population) - num_to_replace
         fitness_scores = np.array(fitness_function(population))
         normalized_weights = fitness_scores ** 5 / np.sum(fitness_scores ** 5)
