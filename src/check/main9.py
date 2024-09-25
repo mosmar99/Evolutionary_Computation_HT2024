@@ -6,8 +6,8 @@ from mutation import Mutation
 from recombination import Recombination
 from survival_selection import Survival_Selection
 from parent_selection import Parent_Selection
-from termination import Termination
-from visuals import Visualization
+from src.utils.termination import Termination
+from src.utils.visuals import Visualization
 from destroy import Destroy
 
 class Genetic_Algorithm:
@@ -126,4 +126,5 @@ if __name__ == '__main__':
         for _ in range(gen_algo.iters-1):
             population = gen_algo.get_population()
             logfile.write(f"{gen_algo.solve_static_stagnation(population)},{gen_algo.solve_dynamic_stagnation(population)}\n")
+            
     gen_algo.visual.lineplot_2col(path, gen_algo.GENOME_SIZE)

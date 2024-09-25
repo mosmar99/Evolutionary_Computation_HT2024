@@ -19,6 +19,129 @@ dynamic_vs_static = 'logs/dynamic_vs_static.log'
 dyn_vs_static_stagn = 'logs/dyn_vs_static_stagn.log'
 
 # setups
+
+# just a default setup can be changed to anything
+# incase you dont send in a value it will choose a default value from here.
+# used in .src\genetic_algorithm.py & main.py
+default_setup = {   'GENOME_SIZE':                  8,
+                    'POPULATION_SIZE':            100,
+                    'NUM_OFFSPRING_RATE':          0.2,
+                    'RECOMBINATION_RATE':         0.80,
+                    'MUTATION_RATE':              0.10,
+                    'MAX_FITNESS_EVALUATIONS':    10000,
+                    'TOURNAMENT_GROUP_SIZE':      0.2,
+                    'initialization_strategy':    'random',
+                    'fitness_strategy':           'conflict_based',
+                    'parent_selection_strategy':  'tournament',
+                    'survival_selection_strategy':'prob_survival',
+                    'recombination_strategy':     'partially_mapped_crossover',
+                    'mutation_strategy':          'inversion_mutation',
+                    'termination_strategy':       'evaluation_count',
+
+                    # used in main.py
+                    'use_threading':              False,
+                    'iters':                      10,
+                    'setup_count':                100,
+                    'tuning_strategy':            None,
+                    'log_to_file':                False,
+                    'visualization_strategy':     'terminal',
+                    'log_file':                   log_path,
+                    'output_log_path':            None,
+                    'log_file_X':                 None,
+                    'log_file_Y':                 None,
+                    'topX':                       10,
+}
+
+example_old_main3 = {'GENOME_SIZE':                  8,
+                     'POPULATION_SIZE':            100,
+                     'NUM_OFFSPRING_RATE':          0.2,
+                     'RECOMBINATION_RATE':         0.80,
+                     'MUTATION_RATE':              0.10,
+                     'MAX_FITNESS_EVALUATIONS':    10000,
+                     'TOURNAMENT_GROUP_SIZE':      0.2,
+                     'initialization_strategy':    'random',
+                     'fitness_strategy':           'conflict_based',
+                     'parent_selection_strategy':  'tournament',
+                     'survival_selection_strategy':'prob_survival',
+                     'recombination_strategy':     'partially_mapped_crossover',
+                     'mutation_strategy':          'inversion_mutation',
+                     'termination_strategy':       'evaluation_count',
+ 
+                     # used in main.py
+                     'use_threading':              True,
+                     'iters':                      10,
+                     'setup_count':                100,
+                     'tuning_strategy':            'LHS',
+                     'log_to_file':                True,
+                     'visualization_strategy':     'strategy_plot',
+                     'log_file':                   log_path,
+                     'output_log_path':            log_path4,
+                     'log_file_X':                 'iters',
+                     'log_file_Y':                 'setup_eval_count',
+                     'topX':                       10,
+}
+
+example_old_main4 = {'GENOME_SIZE':                  8,
+                     'POPULATION_SIZE':            100,
+                     'NUM_OFFSPRING_RATE':          0.2,
+                     'RECOMBINATION_RATE':         0.80,
+                     'MUTATION_RATE':              0.10,
+                     'MAX_FITNESS_EVALUATIONS':    10000,
+                     'TOURNAMENT_GROUP_SIZE':      0.2,
+                     'initialization_strategy':    'random',
+                     'fitness_strategy':           'conflict_based',
+                     'parent_selection_strategy':  'tournament',
+                     'survival_selection_strategy':'prob_survival',
+                     'recombination_strategy':     'partially_mapped_crossover',
+                     'mutation_strategy':          'inversion_mutation',
+                     'termination_strategy':       'evaluation_count',
+ 
+                     # used in main.py
+                     'use_threading':              True,
+                     'iters':                      7,
+                     'setup_count':                500,
+                     'tuning_strategy':            'LHS',
+                     'log_to_file':                True,
+                     'visualization_strategy':     'heatmap',
+                     'log_file':                   log_path,
+                     'output_log_path':            log_path5,
+                     'log_file_X':                 'population_size',
+                     'log_file_Y':                 'setup_eval_count',
+                     'topX':                       10,
+}
+
+example_old_main5 = {'GENOME_SIZE':                  8,
+                     'POPULATION_SIZE':            100,
+                     'NUM_OFFSPRING_RATE':          0.2,
+                     'RECOMBINATION_RATE':         0.80,
+                     'MUTATION_RATE':              0.10,
+                     'MAX_FITNESS_EVALUATIONS':    10000,
+                     'TOURNAMENT_GROUP_SIZE':      0.2,
+                     'initialization_strategy':    'random',
+                     'fitness_strategy':           'conflict_based',
+                     'parent_selection_strategy':  'tournament',
+                     'survival_selection_strategy':'prob_survival',
+                     'recombination_strategy':     'partially_mapped_crossover',
+                     'mutation_strategy':          'inversion_mutation',
+                     'termination_strategy':       'evaluation_count',
+ 
+                     # used in main.py
+                     'use_threading':              True,
+                     'iters':                      3,
+                     'setup_count':                1000,
+                     'tuning_strategy':            'LHS',
+                     'log_to_file':                True,
+                     'visualization_strategy':     'scatter',
+                     'log_file':                   log_path,
+                     'output_log_path':            log_path6,
+                     'log_file_X':                 'recombination_rate',
+                     'log_file_Y':                 'setup_eval_count',
+                     'topX':                       10,
+}
+
+
+
+
 setup = {   'GENOME_SIZE':                  8,
             'POPULATION_SIZE':            100,
             'NUM_OFFSPRING_RATE':          0.2,
@@ -39,12 +162,12 @@ setup = {   'GENOME_SIZE':                  8,
             'print_type':                 'csv_file'
     }
 
-setup1 = { 'GENOME_SIZE':                  8,
+setup1 = { 'GENOME_SIZE':                  12,
             'POPULATION_SIZE':            100,
             'NUM_OFFSPRING_RATE':          0.2,
             'RECOMBINATION_RATE':         0.80,
             'MUTATION_RATE':              0.10,
-            'MAX_FITNESS_EVALUATIONS':    10000,
+            'MAX_FITNESS_EVALUATIONS':    1000000,
             'TOURNAMENT_GROUP_SIZE':      0.2, 
             'initialization_strategy':    'random',
             'fitness_strategy':           'conflict_based',
@@ -136,21 +259,21 @@ setup6 = { 'GENOME_SIZE':                  8,
 }
 
 # # MAIN3
-# param_ranges = {
-#     'POPULATION_SIZE': (50, 200),
-#     'NUM_OFFSPRING_RATE': (0.1, 0.5),   
-#     'RECOMBINATION_RATE': (0.6, 0.9),
-#     'MUTATION_RATE': (0.01, 0.5),
-#     'TOURNAMENT_GROUP_SIZE': (0.1, 0.8),
-# }
+param_ranges = {
+    'POPULATION_SIZE': (50, 200),
+    'NUM_OFFSPRING_RATE': (0.1, 0.5),   
+    'RECOMBINATION_RATE': (0.6, 0.9),
+    'MUTATION_RATE': (0.01, 0.5),
+    'TOURNAMENT_GROUP_SIZE': (0.1, 0.8),
+}
 
-# strategy_options = {
-#     'initialization_strategy': ['random_permutations'],
-#     'parent_selection_strategy': ['tournament'],
-#     'recombination_strategy': ['partially_mapped_crossover', 'pmx_dp_rm'],
-#     'mutation_strategy': ['swap_mutation', 'inversion_mutation', 'duplicate_replacement'],
-#     'survival_selection_strategy': ['prob_survival'],
-# }
+strategy_options = {
+    'initialization_strategy': ['random_permutations'],
+    'parent_selection_strategy': ['tournament'],
+    'recombination_strategy': ['partially_mapped_crossover', 'pmx_dp_rm'],
+    'mutation_strategy': ['swap_mutation', 'inversion_mutation', 'duplicate_replacement'],
+    'survival_selection_strategy': ['prob_survival'],
+}
 
 # constants = { 
 #     'GENOME_SIZE': 8,
@@ -171,25 +294,25 @@ setup6 = { 'GENOME_SIZE':                  8,
 # }
 
 # # for the sake of printing topX
-# constants = { 
-#     'GENOME_SIZE': 7,
-#     'POPULATION_SIZE': 100,
-#     'MAX_FITNESS_EVALUATIONS': 10000,
-#     'fitness_strategy': 'conflict_based',
-#     'termination_strategy': 'evaluation_count',
-#     'visualization_strategy': 'terminal',
-#     'metric_strategy': 'avg_similarity',
-#     'logging_strategy': 'logger',
-#     'print_type': 'csv_file',
-#     'NUM_OFFSPRING_RATE': 0.381,
-#     'MUTATION_RATE': 0.306,
-#     'TOURNAMENT_GROUP_SIZE': 0.372,
-#     'initialization_strategy': ['random_permutations'],
-#     'parent_selection_strategy': ['tournament'],
-#     'recombination_strategy': ['partially_mapped_crossover'],
-#     'mutation_strategy': ['duplicate_replacement'],
-#     'survival_selection_strategy': ['prob_survival']
-# }
+constants = { 
+    'GENOME_SIZE': 7,
+    'POPULATION_SIZE': 100,
+    'MAX_FITNESS_EVALUATIONS': 10000,
+    'fitness_strategy': 'conflict_based',
+    'termination_strategy': 'evaluation_count',
+    'visualization_strategy': 'terminal',
+    'metric_strategy': 'avg_similarity',
+    'logging_strategy': 'logger',
+    'print_type': 'csv_file',
+    'NUM_OFFSPRING_RATE': 0.381,
+    'MUTATION_RATE': 0.306,
+    'TOURNAMENT_GROUP_SIZE': 0.372,
+    'initialization_strategy': ['random_permutations'],
+    'parent_selection_strategy': ['tournament'],
+    'recombination_strategy': ['partially_mapped_crossover'],
+    'mutation_strategy': ['duplicate_replacement'],
+    'survival_selection_strategy': ['prob_survival']
+}
 
 setup_genocide = {  'GENOME_SIZE':                    6,
                     'POPULATION_SIZE':              100,

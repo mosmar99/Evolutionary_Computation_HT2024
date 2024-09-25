@@ -1,4 +1,4 @@
-import config
+# import config
 import pandas as pd
 from plotly.subplots import make_subplots
 import plotly.graph_objects as go
@@ -57,15 +57,18 @@ class Visualization:
         fig.update_layout(height=600, width=1200, title_text="Group 9: Scatter Plots of Genetic Algorithm Metrics")
         fig.show()
 
-    def strategy_plot(self, file_loc, runs):
+    def strategy_plot(self, file_loc, runs, y = None):
         strategies = []
         eval_counts = []
         
         with open(file_loc, 'r') as file:
             for line in file:
-                strategy, count = line.strip().split(',')
-                strategies.append(strategy)
-                eval_counts.append(float(count))
+                try:
+                    strategy, count = line.strip().split(',')
+                    strategies.append(strategy)
+                    eval_counts.append(float(count))
+                except:
+                    pass
 
         sorted_data = sorted(zip(strategies, eval_counts), key=lambda x: x[1])
         sorted_strategies, sorted_eval_counts = zip(*sorted_data)
@@ -112,7 +115,7 @@ class Visualization:
         plt.tight_layout()
         plt.show()
 
-    def heatmap(self, datafile_loc):
+    def heatmap(self, datafile_loc, x = None, y = None):
         df = pd.read_csv(datafile_loc, header=0)
         fig, axes = plt.subplots(1, 2, figsize=(12, 6))
         sns.heatmap(df.corr(), annot=True, fmt=".2f", ax=axes[0])
@@ -172,4 +175,4 @@ if __name__ == '__main__':
     
     # Get Trendline
     view_obj = Visualization('scatter')
-    view_obj(config.log_path6, 'recombination_rate', 'setup_eval_count')
+    # view_obj(config.log_path6, 'recombination_rate', 'setup_eval_count')

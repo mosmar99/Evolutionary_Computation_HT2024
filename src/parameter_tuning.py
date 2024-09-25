@@ -1,6 +1,6 @@
 import numpy as np
 from scipy.stats import qmc
-import config
+import src.config as config
 import ast
 import json
     
