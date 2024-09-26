@@ -1,5 +1,4 @@
 import numpy as np
-import random
 
 class Recombination:
     def __init__(self, recombination_strategy):
@@ -130,11 +129,13 @@ class Recombination:
         child_two = [-1] * GENOME_SIZE
 
         #choose two crossover points A & B
-        crossover_point_A = random.choice(genome_pool[:len(genome_pool)-1])
-        crossover_point_B = random.choice(genome_pool)
+        # crossover_point_A = random.choice(genome_pool[:len(genome_pool)-1])
+        # crossover_point_B = random.choice(genome_pool)
+        crossover_point_A = np.random.randint(1, GENOME_SIZE - 1)
+        crossover_point_B = np.random.randint(crossover_point_A + 1, GENOME_SIZE)
 
-        while crossover_point_A >= crossover_point_B:
-            crossover_point_B = random.choice(genome_pool)
+        # while crossover_point_A >= crossover_point_B:
+        #     crossover_point_B = random.choice(genome_pool)
 
         dad_copy = dad.copy()
         mom_copy = mom.copy()
