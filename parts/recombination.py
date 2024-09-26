@@ -1,4 +1,5 @@
 import numpy as np
+import random
 
 class Recombination:
     def __init__(self, recombination_strategy):
@@ -6,7 +7,8 @@ class Recombination:
                                     'one_point_crossover': self.one_point_crossover,
                                     'two_point_crossover': self.two_point_crossover,
                                     'partially_mapped_crossover': self.partially_mapped_crossover,
-                                    'pmx_dp_rm': self.pmx_dp_rm}
+                                    'pmx_dp_rm': self.pmx_dp_rm,
+                                    'ordered_crossover': self.ordered_crossover}
 
         self.recombination_strategy = recombination_strategies[recombination_strategy]
         self.strategy_name = recombination_strategy
@@ -119,3 +121,57 @@ class Recombination:
             individual[duplicate_indices[np.random.randint(len(duplicate_indices))]] = missing
 
         return individual
+    
+    def ordered_crossover(self, dad, mom, GENOME_SIZE):
+
+        genome_pool = np.arange(1, GENOME_SIZE + 1)
+
+        child_one = [-1] * GENOME_SIZE
+        child_two = [-1] * GENOME_SIZE
+
+        #choose two crossover points A & B
+        crossover_point_A = random.choice(genome_pool[:len(genome_pool)-1])
+        crossover_point_B = random.choice(genome_pool)
+
+        while crossover_point_A >= crossover_point_B:
+            crossover_point_B = random.choice(genome_pool)
+
+        dad_copy = dad.copy()
+        mom_copy = mom.copy()
+
+        dad_subset = dad_copy[crossover_point_A:crossover_point_B]
+        mom_subset = mom_copy[crossover_point_A:crossover_point_B]
+        
+        dad_uniques = []
+        mom_uniques = []
+
+        [dad_uniques.append(x) for x in dad_subset if x not in dad_uniques]
+        [mom_uniques.append(x) for x in mom_subset if x not in mom_uniques]
+
+        for idx in range(crossover_point_A,crossover_point_B):
+            if(idx - crossover_point_A < len(dad_uniques)):
+                child_one[idx] = dad_uniques[idx - crossover_point_A]
+            if(idx - crossover_point_A < len(mom_uniques)):
+                child_two[idx] = mom_uniques[idx - crossover_point_A]
+
+
+        for idx in range(GENOME_SIZE):
+            if idx < crossover_point_A or idx >= crossover_point_B:
+                if dad_copy[idx] not in child_one:
+                    child_one[idx] = dad_copy[idx]
+                if mom_copy[idx] not in child_two:
+                    child_two[idx] = mom_copy[idx]
+
+        missing_values_child_one = np.setdiff1d(genome_pool, child_one)
+        missing_values_child_two = np.setdiff1d(genome_pool, child_two)
+
+        
+        for idx in range(len(missing_values_child_one)):
+            if -1 in child_one:
+                child_one[child_one.index(-1)] = int(missing_values_child_one[idx])
+        
+        for idx in range(len(missing_values_child_two)):
+            if -1 in child_two:
+                child_two[child_two.index(-1)] = int(missing_values_child_two[idx])
+
+        return [child_one, child_two]
