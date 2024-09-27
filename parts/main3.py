@@ -85,7 +85,7 @@ class Genetic_Algorithm_Avg:
 if __name__ == '__main__':
     iters = 10
     setup_count = 100
-    topX = 10
+    topX = 15
     pt = Parameter_Tuning('LHS')
     setups = pt.tuning_strategy(setup_count)
     
