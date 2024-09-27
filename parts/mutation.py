@@ -4,7 +4,9 @@ class Mutation:
     def __init__(self, mutation_strategy):
         mutation_strategies = {'swap_mutation': self.swap_mutation,
                                'inversion_mutation': self.inversion_mutation,
-                               'duplicate_replacement': self.duplicate_replacement}
+                               'duplicate_replacement': self.duplicate_replacement,
+                               'creep_mutation': self.creep_mutation,
+                               'scramble_mutation': self.scramble_mutation}
         
         self.mutation_strategy = mutation_strategies[mutation_strategy]
         self.strategy_name = mutation_strategy
@@ -55,3 +57,34 @@ class Mutation:
             individual[duplicate_indices[np.random.randint(len(duplicate_indices))]] = missing
 
         return individual
+    
+    def creep_mutation(self, individual, GENOME_SIZE):
+        rd_col_idx = np.random.choice(GENOME_SIZE)
+
+        if individual[rd_col_idx] > 0 and individual[rd_col_idx] < GENOME_SIZE:
+            up_or_down = np.random.choice([-1, 1])
+            individual[rd_col_idx] += up_or_down
+        elif individual[rd_col_idx] == 0:
+            individual[rd_col_idx] += 1
+        elif individual[rd_col_idx] == GENOME_SIZE:
+            individual[rd_col_idx] -= 1
+        else:
+            raise ValueError(f"Unexpected value in '{individual[rd_col_idx]}'")
+        
+        return individual
+        
+    def scramble_mutation(self, individual, GENOME_SIZE):
+        random_size = np.random.randint(1, GENOME_SIZE+1)
+        random_genetical_subset = np.random.choice(GENOME_SIZE, size=random_size, replace=False)
+        for i in range(len(random_genetical_subset)):
+            gene_idx = random_genetical_subset[i]
+            individual[gene_idx] = np.random.choice(GENOME_SIZE) + 1
+        return individual
+    
+if __name__ == '__main__':
+    GENOME_SIZE = 8
+    individual = np.random.randint(1, GENOME_SIZE+1, size=GENOME_SIZE)
+    mut_obj = Mutation('creep_mutation')
+    print(individual)
+    mut_obj.scramble_mutation(individual, GENOME_SIZE)
+    print(individual)
