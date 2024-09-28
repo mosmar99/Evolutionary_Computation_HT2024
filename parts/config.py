@@ -17,6 +17,16 @@ log_path_geno10 = 'logs/geno_plot10.log'
 max_vs_mean_geno = 'logs/max_vs_mean_geno.log'
 dynamic_vs_static = 'logs/dynamic_vs_static.log'
 dyn_vs_static_stagn = 'logs/dyn_vs_static_stagn.log'
+final_out = 'logs/final_out.log'
+# used to get best strategies
+final_2000_setups = 'logs/final_2000_setups.log'
+final_2000x10 = 'logs/final_2000x10_out.log'
+# now, fix strategies and try to find best numeric parameters (np)
+final_2000_setups_np = 'logs/final_2000_setups_np.log'
+final_2000x10_np = 'logs/final_2000x10_out_np.log'
+# test
+test_setups = 'logs/test_setups.log'
+test_results = 'logs/test_results.log'
 
 # setups
 setup = {   'GENOME_SIZE':                  8,
@@ -135,20 +145,50 @@ setup6 = { 'GENOME_SIZE':                  8,
             'termination_strategy':       'evaluation_count',
 }
 
-# # MAIN3
+# MAIN3_2
+iters = 10
+setup_count = 2000
+param_ranges = {
+    'RECOMBINATION_RATE': (0.50, 0.95),
+    'MUTATION_RATE': (0.01, 0.28)
+}
+
+strategy_options = {
+    'initialization_strategy': ['random'],
+    'parent_selection_strategy': ['tournament'],
+    'recombination_strategy': ['ordered_crossover'],
+    'mutation_strategy': ['swap_mutation'],
+    'survival_selection_strategy': ['prob_survival'],
+}
+
+constants = { 
+    'GENOME_SIZE': 8,
+    'POPULATION_SIZE': 200,
+    'NUM_OFFSPRING_RATE': 0.40,   
+    'TOURNAMENT_GROUP_SIZE': 0.45,
+    'MAX_FITNESS_EVALUATIONS': 10000,
+    'fitness_strategy': 'conflict_based',
+    'termination_strategy': 'evaluation_count',
+    'visualization_strategy': 'terminal',
+    'metric_strategy': 'avg_similarity',
+    'logging_strategy': 'logger',
+    'print_type': 'csv_file',
+}
+
+# # MAIN3_1
 # param_ranges = {
-#     'POPULATION_SIZE': (50, 200),
-#     'NUM_OFFSPRING_RATE': (0.1, 0.5),   
-#     'RECOMBINATION_RATE': (0.6, 0.9),
-#     'MUTATION_RATE': (0.01, 0.5),
-#     'TOURNAMENT_GROUP_SIZE': (0.1, 0.8),
+#     'POPULATION_SIZE': (80, 200),
+#     'NUM_OFFSPRING_RATE': (0.2, 0.6),   
+#     'RECOMBINATION_RATE': (0.7, 0.95),
+#     'MUTATION_RATE': (0.01, 0.1),
+#     'TOURNAMENT_GROUP_SIZE': (0.3, 0.6),
 # }
 
 # strategy_options = {
-#     'initialization_strategy': ['random_permutations'],
+#     'initialization_strategy': ['random'],
 #     'parent_selection_strategy': ['tournament'],
-#     'recombination_strategy': ['partially_mapped_crossover', 'pmx_dp_rm', 'ordered_crossover'],
-#     'mutation_strategy': ['swap_mutation', 'inversion_mutation', 'duplicate_replacement'],
+#     'recombination_strategy': ['ordered_crossover', 'pmx_dp_rm', 'partially_mapped_crossover', 'two_point_crossover', 'two_point_crossover', 'one_point_crossover', 'even_cut_and_crossfill'],
+#     'mutation_strategy': ['inversion_mutation', 'swap_mutation', 'duplicate_replacement', 'creep_mutation', 'scramble_mutation'],
 #     'survival_selection_strategy': ['prob_survival'],
 # }
 
@@ -162,34 +202,6 @@ setup6 = { 'GENOME_SIZE':                  8,
 #     'logging_strategy': 'logger',
 #     'print_type': 'csv_file',
 # }
-
-# MAIN3
-param_ranges = {
-    'POPULATION_SIZE': (99, 101),
-    'NUM_OFFSPRING_RATE': (0.18, 0.72),   
-    'RECOMBINATION_RATE': (0.6, 0.9),
-    'MUTATION_RATE': (0.01, 0.28),
-    'TOURNAMENT_GROUP_SIZE': (0.3, 0.6),
-}
-
-strategy_options = {
-    'initialization_strategy': ['random'],
-    'parent_selection_strategy': ['tournament'],
-    'recombination_strategy': ['ordered_crossover'],
-    'mutation_strategy': ['creep_mutation', 'scramble_mutation'],
-    'survival_selection_strategy': ['prob_survival'],
-}
-
-constants = { 
-    'GENOME_SIZE': 8,
-    'MAX_FITNESS_EVALUATIONS': 10000,
-    'fitness_strategy': 'conflict_based',
-    'termination_strategy': 'evaluation_count',
-    'visualization_strategy': 'terminal',
-    'metric_strategy': 'avg_similarity',
-    'logging_strategy': 'logger',
-    'print_type': 'csv_file',
-}
 
 # param_ranges = {
 #     'RECOMBINATION_RATE': (0.05, 0.95),
@@ -297,3 +309,23 @@ setup_dyn_stagn = {  'GENOME_SIZE':                   7,
                     'termination_strategy':       'evaluation_count',
                     'visualization_strategy':     'terminal',
 }
+
+setup_final = { 'GENOME_SIZE': 8,
+                'POPULATION_SIZE': 116, 
+                'MAX_FITNESS_EVALUATIONS': 10000,
+                'NUM_OFFSPRING_RATE': 0.543, 
+                'RECOMBINATION_RATE': 0.716, 
+                'MUTATION_RATE': 0.065, 
+                'TOURNAMENT_GROUP_SIZE': 0.515, 
+                'MAX_STAGNANT_GENERATIONS': 3,
+                'TOLERANCE': 1e-2,
+                'GENOCIDE_PERC': 0.3,
+                'initialization_strategy': 'random', 
+                'parent_selection_strategy': 'tournament', 
+                'fitness_strategy':           'conflict_based',
+                'recombination_strategy': 'pmx_dp_rm', 
+                'mutation_strategy': 'duplicate_replacement', 
+                'survival_selection_strategy': 'prob_survival',
+                'termination_strategy': 'evaluation_count',
+                'visualization_strategy': 'terminal',
+            }

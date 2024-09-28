@@ -2,7 +2,6 @@
 import config
 import time
 import concurrent.futures, multiprocessing
-import numpy as np
 from threading import Lock
 from init_pop import Init_Pop
 from fitness import Fitness_Function
@@ -17,34 +16,28 @@ from parameter_tuning import Parameter_Tuning
 class Genetic_Algorithm_Avg:
     def __init__(self, **kwargs):
         # Not included in Parameter Search
-        self.GENOME_SIZE = config.constants['GENOME_SIZE'] # N-QUEENS (EX: 'every Queen has a genome size of 8')
+        self.GENOME_SIZE = 8 # N-QUEENS (EX: 'every Queen has a genome size of 8')
         self.MAX_FITNESS_EVALUATIONS = 10000
         self.fitness_function = Fitness_Function('conflict_based')
+        self.fitness = lambda population: self.fitness_function(population, self.GENOME_SIZE)
         self.termination = Termination('evaluation_count')
-        self.TOURNAMENT_GROUP_SIZE = config.constants['TOURNAMENT_GROUP_SIZE']
-        # self.TOURNAMENT_GROUP_SIZE = kwargs['TOURNAMENT_GROUP_SIZE']
-        self.POPULATION_SIZE = config.constants['POPULATION_SIZE']
-        # self.POPULATION_SIZE = kwargs['POPULATION_SIZE']
-        self.NUM_OFFSPRING_RATE = config.constants['NUM_OFFSPRING_RATE']
-        # self.NUM_OFFSPRING_RATE = kwargs['NUM_OFFSPRING_RATE']
 
         # Included in Parameter Search
-        self.MUTATION_RATE = kwargs['MUTATION_RATE']
+        self.POPULATION_SIZE = kwargs['POPULATION_SIZE']
+        self.NUM_OFFSPRING_RATE = kwargs['NUM_OFFSPRING_RATE']
         self.RECOMBINATION_RATE = kwargs['RECOMBINATION_RATE']
+        self.MUTATION_RATE = kwargs['MUTATION_RATE']
+        self.TOURNAMENT_GROUP_SIZE = kwargs['TOURNAMENT_GROUP_SIZE']
         self.init = Init_Pop(kwargs['initialization_strategy'])
         self.parent_selection = Parent_Selection(kwargs['parent_selection_strategy'])
         self.recombination = Recombination(kwargs['recombination_strategy'])
         self.mutation = Mutation(kwargs['mutation_strategy'])
         self.survival_selection = Survival_Selection(kwargs['survival_selection_strategy'])
 
-        self.fitness = self.calculate_fitness
-
         self.curr_fitness_evaluations = 0
         self.curr_most_fit_individual = 0
 
-    def calculate_fitness(self, population):
-        return self.fitness_function(population, self.GENOME_SIZE)
-    
+
     def solve(self):
         is_solution = False
         self.curr_fitness_evaluations = 0
@@ -80,32 +73,30 @@ class Genetic_Algorithm_Avg:
     def worker(setup_idx, setup, iters):
         genetic_algorithm = Genetic_Algorithm_Avg(**setup)
         setup_eval_count = round(genetic_algorithm.exp_evals(iters))
-        return (setup_idx, setup_eval_count, genetic_algorithm)
+        return (setup_idx, setup_eval_count)
     
     @staticmethod
     def get_topX_setups(topX):
-        evals_file_loc = config.final_2000x10
-        setups_file_loc = config.final_2000_setups
+        evals_file_loc = 'logs/LHS_Setups_evals.log'
+        setups_file_loc = 'logs/LHS_Setups.log'
         output_file_loc = 'topX_setups.py'
         pt.extract_topX_setups(evals_file_loc, setups_file_loc, output_file_loc, topX)
     
 if __name__ == '__main__':
-    iters = config.iters
-    setup_count = config.setup_count
-    # topX = 200
+    iters = 10
+    setup_count = 100
+    topX = 15
     pt = Parameter_Tuning('LHS')
     setups = pt.tuning_strategy(setup_count)
-
-    with open(config.test_setups, 'w') as log_setup:
-        log_setup.write(f"Iterations per setup: {iters}.\nAmount of Setups: {setup_count}.\n\n{setups}")
+    
+    with open(config.log_path3, 'w') as log_setup:
+        log_setup.write(f"iterations per setup: {iters}\namount of setups: {setup_count}\n\n{setups}")
     print("\n... created and saved setups")
     
     file_lock = Lock()
     counter = 0
     with concurrent.futures.ProcessPoolExecutor(max_workers=multiprocessing.cpu_count()) as executor:
-        with open(config.test_results, 'w') as log:
-            log.write("setup_id,mutation_strategy,recombination_strategy,parent_selection_strategy,initialization_strategy,POPULATION_SIZE,NUM_OFFSPRING_RATE,RECOMBINATION_RATE,MUTATION_RATE,TOURNAMENT_GROUP_SIZE,evaluation_count\n")
-
+        with open(config.log_path4, 'w') as log_evals:
             start_time = time.time()
             futures = []
             
@@ -114,27 +105,12 @@ if __name__ == '__main__':
                 futures.append(future)
             
             for future in concurrent.futures.as_completed(futures):
-                setup_idx, setup_eval_count, genetic_algorithm = future.result()
-
-                # strings
-                mutation_strategy = genetic_algorithm.mutation.strategy_name
-                recombination_strategy = genetic_algorithm.recombination.strategy_name
-                parent_selection_strategy = genetic_algorithm.parent_selection.strategy_name
-                initialization_strategy = genetic_algorithm.init.strategy_name
-
-                # numbers
-                population_size = config.constants['POPULATION_SIZE']
-                num_offspring_rate = config.constants['NUM_OFFSPRING_RATE']
-                recombination_rate = genetic_algorithm.RECOMBINATION_RATE
-                mutation_rate = genetic_algorithm.MUTATION_RATE
-                tournament_group_size = config.constants['TOURNAMENT_GROUP_SIZE']
+                setup_idx, setup_eval_count = future.result()
                 
                 with file_lock:
-                    log.write(f"s_{setup_idx + 1},{mutation_strategy},{recombination_strategy},{parent_selection_strategy},{initialization_strategy},{population_size},{num_offspring_rate},{recombination_rate},{mutation_rate},{tournament_group_size},{setup_eval_count}\n")
+                    log_evals.write(f"s_{setup_idx + 1},{setup_eval_count}\n")
                     counter = counter + 1
                     print(f"Loading {(counter * 100 / setup_count)}%  --({(time.time() - start_time):.2f}sec)")
-    folder = config.test_results
-    n = config.constants['GENOME_SIZE']
-    iters = config.iters
-    setup_count = config.setup_count
-    Visualization('px_density_hp').create_density_heatmap(folder, iters, n, setup_count)
+
+    Genetic_Algorithm_Avg.get_topX_setups(topX)
+    Visualization('strategy_plot').strategy_plot(file_loc=config.log_path4, runs=iters)

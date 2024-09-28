@@ -2,18 +2,28 @@ import config
 import pandas as pd
 from plotly.subplots import make_subplots
 import plotly.graph_objects as go
+import plotly.express as px
 import matplotlib.pyplot as plt
 import seaborn as sns
 import numpy as np
 
 class Visualization:
     def __init__(self, visualization_strategy):
-        visualization_strategies = { 'terminal': self.terminal,
-                                     'html_sim_eval': self.html_sim_eval,
-                                     'strategy_plot': self.strategy_plot,
-                                     'graph_space_vs_solutions': self.graph_space_vs_solutions,
-                                     'heatmap': self.heatmap,
-                                     'scatter': self.scatter}
+        visualization_strategies = { 
+            'terminal': self.terminal,
+            'html_sim_eval': self.html_sim_eval,
+            'strategy_plot': self.strategy_plot,
+            'graph_space_vs_solutions': self.graph_space_vs_solutions,
+            'heatmap': self.heatmap,
+            'scatter': self.scatter,
+            'bar': self.create_bar_plot,  
+            'box': self.create_box_plot,  
+            'px_heatmap': self.create_heatmap,  
+            'px_scatter': self.create_scatter_plot,
+            'px_numeric_heatmap': self.create_numeric_heatmap,
+            'px_density': self.create_density_plot,
+            'px_density_hp': self.create_density_heatmap
+        }
         self.visualization_strategy = visualization_strategies[visualization_strategy]
 
     def __call__(self, *args, **kwargs):
@@ -161,15 +171,92 @@ class Visualization:
         plt.tight_layout()
         plt.show()
 
+    def lineplot_1col(self, datafile_loc, n, runs):
+        df = pd.read_csv(datafile_loc, header=None, names=['y'])
+        iters = np.arange(1, len(df.y)+1)
+        fig, axs = plt.subplots(1, 1, figsize=(10, 4)) 
+        axs.plot(iters, df.y, label='Final Configuration', color='blue')
+        axs.set_title(f"Final Generation Count per Generated Population (n={n} | runs_per_population={runs})")
+        axs.axhline(y=np.mean(df.y), color='darkblue', linestyle='--', label=f'Avg. {round(np.mean(df.y), 2)}', zorder=1)
+        axs.set_xlabel(f'Population')
+        axs.set_ylabel('Generation Count')
+        axs.legend()
+        
+        plt.tight_layout()
+        plt.show()
+
+    def create_bar_plot(self, file_loc, runs, n, setup_count):
+        df = pd.read_csv(file_loc)
+        fig = px.bar(df, x='mutation_strategy', y='evaluation_count', color='evaluation_count', title=f'Bar Plot of Evaluation Count by Mutation Strategy (n={n} | setup_count = {setup_count} | {runs} Runs)')
+        fig.show()
+
+    def create_box_plot(self, file_loc, runs, n, setup_count):
+        df = pd.read_csv(file_loc)
+        fig = px.box(df, x='mutation_strategy', y='evaluation_count', points='all', title=f'Box Plot of Evaluation Count by Mutation Strategy (n={n} | setup_count = {setup_count} | {runs} Runs)')
+        fig.show()
+
+    def create_heatmap(self, file_loc, runs, n, setup_count):
+        df = pd.read_csv(file_loc)
+        heatmap_data = df.pivot_table(values='evaluation_count', index='mutation_strategy', columns='recombination_strategy', aggfunc='mean')
+        fig = go.Figure(data=go.Heatmap(z=heatmap_data.values, x=heatmap_data.columns, y=heatmap_data.index))
+        fig.update_layout(title=f'Heatmap of Evaluation Count by Strategies (n={n} | setup_count = {setup_count} | {runs} Runs)', xaxis_title='Recombination Strategy', yaxis_title='Mutation Strategy')
+        fig.show()
+
+    def create_scatter_plot(self, file_loc, runs, n, setup_count):
+        df = pd.read_csv(file_loc)
+        fig = px.scatter(df, x='RECOMBINATION_RATE', y='evaluation_count', color='evaluation_count', size='MUTATION_RATE', title=f'Scatter Plot: TOURNAMENT_GROUP_SIZE vs Evaluation Count (n={n} | setup_count = {setup_count} | {runs} Runs)')
+        fig.update_traces(marker=dict(size=10))
+        fig.show()
+
+    def create_numeric_heatmap(self, file_loc, runs, n, setup_count):
+        df = pd.read_csv(file_loc)
+        numerical_columns = ['POPULATION_SIZE', 'NUM_OFFSPRING_RATE', 'RECOMBINATION_RATE', 'MUTATION_RATE', 'TOURNAMENT_GROUP_SIZE']
+
+        y = 'MUTATION_RATE'
+        x = 'RECOMBINATION_RATE'
+        heatmap_data = df.pivot_table(
+            values='evaluation_count', 
+            index=y,  
+            columns=x,
+            aggfunc='mean' 
+        )
+        
+        fig = go.Figure(data=go.Heatmap(
+            z=heatmap_data.values,  
+            x=heatmap_data.columns,  
+            y=heatmap_data.index,    
+            colorscale='Viridis'  
+        ))
+        
+        fig.update_layout(
+            title=f'Heatmap of Evaluation Count by Mutation & Recombination Rates (n={n} | setup_count = {setup_count} | {runs} Runs)',
+            xaxis_title=x,
+            yaxis_title=y
+        )
+        
+        fig.show()
+    
+    def create_density_plot(self, file_loc, runs, n, setup_count):
+        df = pd.read_csv(file_loc)
+        fig = px.density_contour(df, 
+                                x='RECOMBINATION_RATE', 
+                                y='MUTATION_RATE', 
+                                z='evaluation_count',
+                                title=f'Density Plot of Evaluation Count by Mutation & Recombination Rates (n={n} | setup_count = {setup_count} | {runs} Runs)')
+        fig.show()
+
+    def create_density_heatmap(self, file_loc, runs, n, setup_count):
+        df = pd.read_csv(file_loc)
+        fig = px.density_heatmap(df, 
+                                x='RECOMBINATION_RATE', 
+                                y='MUTATION_RATE', 
+                                z='evaluation_count', 
+                                title=f'Density Heatmap of Evaluation Count (n={n} | setup_count = {setup_count} | {runs} Runs)')
+        fig.show()
+        
 if __name__ == '__main__':
-    # GET NQUEENS SPACE/SOL GRAPH
-    # view_obj = Visualization('graph_space_vs_solutions')
-    # view_obj('logs/nqueens_data.log')
-    
-    # # Get Heatmap
-    # view_obj = Visualization('heatmap')
-    # view_obj('logs/heatmap_data.log')
-    
-    # Get Trendline
-    view_obj = Visualization('scatter')
-    view_obj(config.log_path6, 'recombination_rate', 'setup_eval_count')
+    folder = config.test_results
+    n = config.constants['GENOME_SIZE']
+    iters = config.iters
+    setup_count = config.setup_count
+    Visualization('px_density_hp').create_numeric_heatmap(folder, iters, n, setup_count)

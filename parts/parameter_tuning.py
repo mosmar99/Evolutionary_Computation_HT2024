@@ -3,10 +3,15 @@ from scipy.stats import qmc
 import config
 import ast
 import json
-    
+import itertools
+        
 class Parameter_Tuning():
     def __init__(self, tuning_strategy):
-        tuning_strategies = { 'LHS': self.pt_LHS }
+        tuning_strategies = { 'LHS': self.pt_LHS,
+                            'Halton': self.pt_Halton,
+                            'Sobol': self.pt_Sobol,
+                            'Grid': self.pt_Grid
+                            }
         
         self.tuning_strategy = tuning_strategies[tuning_strategy]
         self.strategy_name = tuning_strategy
@@ -33,41 +38,109 @@ class Parameter_Tuning():
             setups.append(setup)
         
         return setups
+
+    def pt_Halton(self, n_samples=100):
+        sampler = qmc.Halton(d=len(config.param_ranges))
+        samples = sampler.random(n=n_samples)
+    
+        setups = []
+        for sample in samples:
+            setup = {}
+            for i, (param, (low, high)) in enumerate(config.param_ranges.items()):
+                if (param == "POPULATION_SIZE"):
+                    setup[param] = round(low + (high - low) * sample[i])
+                else:
+                    setup[param] = round(low + (high - low) * sample[i], 3)
+
+            for strategy, options in config.strategy_options.items():
+                setup[strategy] = np.random.choice(options)
+
+            setups.append(setup)
+        
+        return setups
+
+    def pt_Sobol(self, n_samples=100):
+        sampler = qmc.Sobol(d=len(config.param_ranges), scramble=False)
+        samples = sampler.random_base2(m=int(np.log2(n_samples)))
+
+        setups = []
+        for sample in samples:
+            setup = {}
+            for i, (param, (low, high)) in enumerate(config.param_ranges.items()):
+                if param == "POPULATION_SIZE":
+                    setup[param] = round(low + (high - low) * sample[i])
+                else:
+                    setup[param] = round(low + (high - low) * sample[i], 3)
+
+            # Randomly choose strategy options
+            for strategy, options in config.strategy_options.items():
+                setup[strategy] = np.random.choice(options)
+
+            setups.append(setup)
+
+        return setups
+
+    def pt_Grid(self, n_samples=100):
+        grid_size = int(np.round(np.sqrt(n_samples)))
+        x_values = np.linspace(0, 1, grid_size)
+        y_values = np.linspace(0, 1, grid_size)
+        x_grid, y_grid = np.meshgrid(x_values, y_values)
+        samples = np.vstack([np.round(x_grid.ravel(), 3), np.round(y_grid.ravel(), 2)]).T
+
+        setups = []
+        for sample in samples:
+            setup = {}
+            for i, (param, (low, high)) in enumerate(config.param_ranges.items()):
+                if param == "POPULATION_SIZE":
+                    setup[param] = round(low + (high - low) * sample[i])
+                else:
+                    setup[param] = round(low + (high - low) * sample[i], 3)
+
+            # Randomly choose strategy options
+            for strategy, options in config.strategy_options.items():
+                setup[strategy] = np.random.choice(options)
+
+            setups.append(setup)
+
+        return setups
     
     def extract_topX_setups(self,evals_file_loc, setups_file_loc, output_file_loc, topX):
-        eval_file = open(evals_file_loc, 'r')
-        eval_file = sorted(eval_file, key=lambda x: int(x.split('_')[1].split(',')[0]))
-        evals = []
-        char_eval = []
-        is_comma = False
-        for line in eval_file:
-            is_comma = False
-            char_eval.clear()
-            for char in line:
-                if(is_comma == False):
-                    if(char == ','):
-                        is_comma = True
-                else:
-                    if(char == '.' or char == ','):
-                        break
-                    char_eval.append(char)
-            evals.append(int(''.join(char_eval)))
-        # get topX evals (lowest eval score)
-        evals = np.array(evals)
-        sorted_arr_indicies = np.argsort(np.array(evals))[:topX]
-        setups = np.array(ast.literal_eval(''.join(open(setups_file_loc).readlines()[3:])))
-        topX_setups = setups[sorted_arr_indicies]
+        with open(evals_file_loc, 'r') as eval_file:
+            eval_lines = eval_file.readlines()[1:]  # Skip header
 
-        output_file = open(output_file_loc, 'w')
-        for idx in range(topX):
-            sorted_idx = sorted_arr_indicies[idx]
-            setup = topX_setups[idx]
-            output_file.write(f"setup{sorted_idx + 1} = {{\n")
-            for key, value in config.constants.items():
-                output_file.write(f"    '{key}': {repr(value)},\n")
-            for key, value in setup.items():
-                output_file.write(f"    '{key}': {repr(value)},\n")
-            output_file.write("}\n\n")
+        evals = []
+        setup_ids = []
+
+        # Extract the setup_id and evaluation_count from each line
+        for line in eval_lines:
+            parts = line.strip().split(',')
+            setup_id = parts[0]  
+            evaluation_count = int(parts[-1])  
+            setup_ids.append(setup_id)
+            evals.append(evaluation_count)
+
+        # Get top X setups (lowest eval score)
+        evals = np.array(evals)
+        sorted_arr_indices = np.argsort(evals)[:topX]  # Indices of the top X setups
+
+        with open(setups_file_loc, 'r') as setups_file:
+            setups = ast.literal_eval(''.join(setups_file.readlines()[3:]))  # Skip first 3 lines
+
+        topX_setups = [setups[idx] for idx in sorted_arr_indices]  
+
+        # Write the top X setups to the output file
+        with open(output_file_loc, 'w') as output_file:
+            for idx in range(topX):
+                sorted_idx = sorted_arr_indices[idx]  
+                setup = topX_setups[idx]  
+                setup_id = setup_ids[sorted_idx]  
+
+                output_file.write(f"{setup_id} = {{\n")
+                for key, value in config.constants.items():
+                    output_file.write(f"    '{key}': {repr(value)},\n")
+                for key, value in setup.items():
+                    output_file.write(f"    '{key}': {repr(value)},\n")
+                output_file.write("}\n\n")
 
 if __name__ == '__main__':
     pt = Parameter_Tuning('LHS')
