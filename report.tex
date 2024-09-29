@@ -409,20 +409,7 @@ Since running a lot of setups for a larger number of iterations can take time we
 
 \lipsum[4]
 
-\section{Conclusion}
-\subsection{Recap}
-The N-Queens problem a well known combinatorial problem, a problem in which the aim is to place N number of queens on a N times N board in such a way that none are attacking each other. This is a very well documented problem \& provided a great way for experimenting and implementing different evolutionary computing algorithms.
-\\\\
-We started off with some simple code we found in the course material, and started off by modularizing the code in order to easily add and change the different strategies used, we for instance tested different rebcombinatorial, mutation \& initialization strategies. We also worked with parameter tuning in changing the population sizes, max evaluations count \& mutation and recombination rates. Towards the end we started experimenting with genocide.
-\subsection{Reflections on results}
-\subsection{Tips on continuing}
-\subsubsection{Parameter tuning}
-A Deeper exploration of the parameters, as mentioned above we worked with for instance tweaking the mutation, population size, max evaluations and more. However this could be expanded upon by running larger tests for in theory better results.
-\subsubsection{Scalability analysis}
-More investigation into how the algorithm scales with extreme sizes of N, it is known that genetic algorithms for this problem out-class backtracking algorithms for larger sizes of N, however testing and tweaking the different strategies for extremer sizes of N might be interesting
-\subsubsection{Threading, parallelism \& optimizations}
-We did use threading in combination with our parameter tuning too speed the entire process up, however if one where want to for instance explore the point mentioned above experimenting with distributed computing approaches will probably be needed, or simply as a challenge too find a solution as fast as possible
-
+\input{conclusion.tex}
 
 \bibliographystyle{ieeetr}
 \bibliography{references}
