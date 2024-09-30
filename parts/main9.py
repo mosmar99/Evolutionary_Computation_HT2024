@@ -94,7 +94,7 @@ class Genetic_Algorithm:
                                      is_solution=is_solution )) ):
             
             # set both at expected infimum to begin with
-            exploration_factor = max(0.1, 1 - (self.GENOME_SIZE / (self.GENOME_SIZE + self.generations**(3/4)))) # declines to its min: 1.0 -> 0.1
+            exploration_factor = max(0.1, (self.GENOME_SIZE / (self.GENOME_SIZE + self.generations**(3/4)))) # declines to its min: 1.0 -> 0.1
             exploitation_factor = max(0.1, 1-exploration_factor) # grows to its max: 0.1 -> 1.0
 
             dynamic_recombination_rate = self.RECOMBINATION_RATE * exploration_factor 
