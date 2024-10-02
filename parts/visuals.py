@@ -352,8 +352,25 @@ class Visualization:
 # input: None
 # output: None
 if __name__ == '__main__':
-    folder = config.test_results
-    n = config.constants['GENOME_SIZE']
-    iters = config.iters
-    setup_count = config.setup_count
-    Visualization('px_density_hp').create_numeric_heatmap(folder, iters, n, setup_count)
+    vis = Visualization('strategy_plot')
+    
+    # visualization of the best setup
+    vis.lineplot_1col(datafile_loc="sample logs/final_out.log", n=8, runs=10)
+
+    # setup comparison visualization (bar chart)
+    vis.strategy_plot(file_loc="sample logs/LHS_Setups_evals.log", runs=50)
+
+    # setup comparison visualization (heatmap)
+    Visualization('px_density_hp').create_density_heatmap("sample logs/test_results.log", 10, 8, 100)
+
+    # stagnation mean vs max
+    vis.lineplot_2col(datafile_loc="sample logs/max_vs_mean_geno.log", n=8)
+
+    # static vs dynamic stagnation
+    vis.lineplot_2col("sample logs/dyn_vs_static_stagn.log", 8)
+
+    # with and without genocide
+    vis.lineplot_2col("sample logs/geno_plot8.log", 8)
+
+    # with static genocide comparing static vs dynamic mutation and recombination rates
+    vis.lineplot_2col("sample logs/dynamic_vs_static.log", 8)

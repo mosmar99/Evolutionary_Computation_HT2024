@@ -3,6 +3,7 @@
 *.html
 *.log
 logs/
+!sample logs/*.log
 
 # Byte-compiled / optimized / DLL files
 __pycache__/
