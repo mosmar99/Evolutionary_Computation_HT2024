@@ -1,3 +1,10 @@
+"""
+This file is a test file using marimo. Used for testing various functions and methods.
+Authors: Mahmut Osmanovic (mosmar99), Sebastian Tuura (tuura01), Isac Paulsson (isacpaulsson), Emil Wagman (Neobyte01), Mohammad Al Khaled (MohamadAlkhaled)
+Last updated: 2024-10-02
+"""
+
+
 import marimo
 
 __generated_with = "0.8.17"

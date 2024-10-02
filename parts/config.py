@@ -1,3 +1,9 @@
+"""
+This file contains the configurations for the project. different setups are defined here. file paths are also defined here & more.
+Authors: Mahmut Osmanovic (mosmar99), Sebastian Tuura (tuura01), Isac Paulsson (isacpaulsson), Emil Wagman (Neobyte01), Mohammad Al Khaled (MohamadAlkhaled)
+Last updated: 2024-10-02
+"""
+
 # paths
 FILENAME = 'log.csv'
 FILE_DIR = 'logs/'
@@ -147,17 +153,23 @@ setup6 = { 'GENOME_SIZE':                  8,
 
 # MAIN3_2
 iters = 10
-setup_count = 2000
+setup_count = 100
 param_ranges = {
     'RECOMBINATION_RATE': (0.50, 0.95),
     'MUTATION_RATE': (0.01, 0.28)
 }
 
 strategy_options = {
-    'initialization_strategy': ['random'],
+    'initialization_strategy': ['random', 'random_permutations'],
     'parent_selection_strategy': ['tournament'],
-    'recombination_strategy': ['ordered_crossover'],
-    'mutation_strategy': ['swap_mutation'],
+    'recombination_strategy': [
+        'ordered_crossover', 'pmx_dp_rm', 'partially_mapped_crossover', 
+        'two_point_crossover', 'one_point_crossover', 'even_cut_and_crossfill'
+    ],
+    'mutation_strategy': [
+        'inversion_mutation', 'swap_mutation', 'duplicate_replacement', 
+        'creep_mutation', 'scramble_mutation'
+    ],
     'survival_selection_strategy': ['prob_survival'],
 }
 
@@ -175,14 +187,14 @@ constants = {
     'print_type': 'csv_file',
 }
 
-# # MAIN3_1
-# param_ranges = {
-#     'POPULATION_SIZE': (80, 200),
-#     'NUM_OFFSPRING_RATE': (0.2, 0.6),   
-#     'RECOMBINATION_RATE': (0.7, 0.95),
-#     'MUTATION_RATE': (0.01, 0.1),
-#     'TOURNAMENT_GROUP_SIZE': (0.3, 0.6),
-# }
+# MAIN3_1
+param_ranges = {
+    'POPULATION_SIZE': (80, 200),
+    'NUM_OFFSPRING_RATE': (0.2, 0.6),   
+    'RECOMBINATION_RATE': (0.7, 0.95),
+    'MUTATION_RATE': (0.01, 0.1),
+    'TOURNAMENT_GROUP_SIZE': (0.3, 0.6),
+}
 
 # strategy_options = {
 #     'initialization_strategy': ['random'],
