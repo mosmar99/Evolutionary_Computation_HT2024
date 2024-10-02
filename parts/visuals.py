@@ -102,6 +102,63 @@ class Visualization:
 
         fig.show()
 
+    def exponent_plot(self, file_loc, runs):
+        exponents = []
+        eval_counts = []
+        
+        with open(file_loc, 'r') as file:
+            for line in file:
+                exponent, count = line.strip().split(',')
+                exponents.append(exponent)
+                eval_counts.append(float(count))
+
+        fig, axs = plt.subplots(1, 1, figsize=(10, 4)) 
+        axs.plot(exponents, eval_counts, label='Exponents', color='blue')
+        axs.set_title(f"Evaluation count by survival exponent ({runs} runs/exponent)")
+        axs.set_xlabel(f'Exponent')
+        axs.set_ylabel('Average evalualtions')
+        axs.legend()
+        
+        plt.grid()
+        plt.tight_layout()
+        plt.show()
+
+    def exponent_convergance_plot(self, file_loc, runs):
+        evals = []
+        max_evals = []
+        avg_evals = []
+        min_evals = []
+        
+        with open(file_loc, 'r') as file:
+            for line in file:
+                max_eval, avg_eval, min_eval = line.strip().split(',,')
+                max_evals.append([float(val) for val in max_eval.strip('[]').split(',')])
+                avg_evals.append([float(val) for val in avg_eval.strip('[]').split(',')])
+                min_evals.append([float(val) for val in min_eval.strip('[]').split(',')])   
+
+        fig, axs = plt.subplots(1, 1, figsize=(10, 4)) 
+
+        axs.plot(np.arange(1, len(max_evals[2])+1), max_evals[2], label='50 max', color='red')
+        axs.plot(np.arange(1, len(avg_evals[2])+1), avg_evals[2], label='50 average', color='red', ls='--')
+        axs.plot(np.arange(1, len(min_evals[2])+1), min_evals[2], label='50 min', color='red', ls=':')
+
+        axs.plot(np.arange(1, len(max_evals[1])+1), max_evals[1], label='15 max', color='green')
+        axs.plot(np.arange(1, len(avg_evals[1])+1), avg_evals[1], label='15 average', color='green', ls='--')
+        axs.plot(np.arange(1, len(min_evals[1])+1), min_evals[1], label='15 min', color='green', ls=':')
+
+        axs.plot(np.arange(1, len(max_evals[0])+1), max_evals[0], label='0 max', color='blue')
+        axs.plot(np.arange(1, len(avg_evals[0])+1), avg_evals[0], label='0 average', color='blue', ls='--')
+        axs.plot(np.arange(1, len(min_evals[0])+1), min_evals[0], label='0 min', color='blue', ls=':')
+
+        axs.set_title(f"Population convergence by exponent ({runs} runs/exponent)")
+        axs.set_xlabel(f'Generations')
+        axs.set_ylabel('Fitness')
+        axs.legend()
+        
+        plt.grid()
+        plt.tight_layout()
+        plt.show()
+
     def graph_space_vs_solutions(self, data_fil_loc):
         data = pd.read_csv(data_fil_loc)
 

@@ -27,6 +27,8 @@ final_2000x10_np = 'logs/final_2000x10_out_np.log'
 # test
 test_setups = 'logs/test_setups.log'
 test_results = 'logs/test_results.log'
+# exponent
+exponent_out = 'logs/exponent_out.log'
 
 # setups
 setup = {   'GENOME_SIZE':                  8,
@@ -312,7 +314,7 @@ setup_dyn_stagn = {  'GENOME_SIZE':                   7,
 
 setup_final = { 'GENOME_SIZE': 8,
                 'POPULATION_SIZE': 116, 
-                'MAX_FITNESS_EVALUATIONS': 10000,
+                'MAX_FITNESS_EVALUATIONS': 100000,
                 'NUM_OFFSPRING_RATE': 0.543, 
                 'RECOMBINATION_RATE': 0.716, 
                 'MUTATION_RATE': 0.065, 
