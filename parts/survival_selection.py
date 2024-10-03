@@ -41,7 +41,7 @@ class Survival_Selection:
         total_population = np.concatenate([population, offspring])
         total_population_evals = np.array(fitness_function(np.concatenate([population, offspring])))
 
-        normalized_weights = total_population_evals**5 / np.sum(total_population_evals**5)
+        normalized_weights = total_population_evals**weighting_exponent / np.sum(total_population_evals**weighting_exponent)
         
         selected_indecies = np.random.choice(np.arange(len(total_population)), len(population), p=normalized_weights, replace=False)
         return total_population[selected_indecies]#
