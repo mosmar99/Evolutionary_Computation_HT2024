@@ -158,5 +158,5 @@ if __name__ == '__main__':
                     print(f"Loading {(counter * 100 / setup_count)}%  --({(time.time() - start_time):.2f}sec)")
 
     # get the topX setups and create a visualization, comparing them based on the average evaluation count
-    Genetic_Algorithm_Avg.get_topX_setups(topX)
+    Genetic_Algorithm_Avg.get_topX_setups(topX - 1) # crashed so added - 1
     Visualization('strategy_plot').strategy_plot(file_loc=config.log_path4, runs=iters)

@@ -26,12 +26,6 @@ class Visualization:
             'graph_space_vs_solutions': self.graph_space_vs_solutions,
             'heatmap': self.heatmap,
             'scatter': self.scatter,
-            'bar': self.create_bar_plot,  
-            'box': self.create_box_plot,  
-            'px_heatmap': self.create_heatmap,  
-            'px_scatter': self.create_scatter_plot,
-            'px_numeric_heatmap': self.create_numeric_heatmap,
-            'px_density': self.create_density_plot,
             'px_density_hp': self.create_density_heatmap
         }
         self.visualization_strategy = visualization_strategies[visualization_strategy]
@@ -134,16 +128,23 @@ class Visualization:
         # Show the plot
         fig.show()
 
+
+    # Exponent plot visualization
+    # input: file_loc: string, runs: int 
+    # output: None
     def exponent_plot(self, file_loc, runs):
         exponents = []
         eval_counts = []
-        
+
+        # open fild in read mode
         with open(file_loc, 'r') as file:
             for line in file:
+                # append the values
                 exponent, count = line.strip().split(',')
                 exponents.append(exponent)
                 eval_counts.append(float(count))
 
+        # create and display plot
         fig, axs = plt.subplots(1, 1, figsize=(10, 4)) 
         axs.plot(exponents, eval_counts, label='Exponents', color='blue')
         axs.set_title(f"Evaluation count by survival exponent ({runs} runs/exponent)")
@@ -155,19 +156,25 @@ class Visualization:
         plt.tight_layout()
         plt.show()
 
+    # Convergence plot visualization for population fitness over generations
+    # input: file_loc: string, runs: int
+    # output: None
     def exponent_convergance_plot(self, file_loc, runs):
         evals = []
         max_evals = []
         avg_evals = []
         min_evals = []
-        
+
+        # open file in read mode
         with open(file_loc, 'r') as file:
             for line in file:
+                # append values from file
                 max_eval, avg_eval, min_eval = line.strip().split(',,')
                 max_evals.append([float(val) for val in max_eval.strip('[]').split(',')])
                 avg_evals.append([float(val) for val in avg_eval.strip('[]').split(',')])
                 min_evals.append([float(val) for val in min_eval.strip('[]').split(',')])   
 
+        # create and show plot
         fig, axs = plt.subplots(1, 1, figsize=(10, 4)) 
 
         axs.plot(np.arange(1, len(max_evals[2])+1), max_evals[2], label='50 max', color='red')
@@ -313,90 +320,6 @@ class Visualization:
         plt.tight_layout()
         plt.show()
 
-    # bar plot visualization
-    # input: file_loc: string, runs: int, n: int, setup_count: int
-    # output: None
-    def create_bar_plot(self, file_loc, runs, n, setup_count):
-        # read the data from the file & create the bar plot
-        df = pd.read_csv(file_loc)
-        fig = px.bar(df, x='mutation_strategy', y='evaluation_count', color='evaluation_count', title=f'Bar Plot of Evaluation Count by Mutation Strategy (n={n} | setup_count = {setup_count} | {runs} Runs)')
-        fig.show()
-
-    # create_box_plot visualization
-    # input: file_loc: string, runs: int, n: int, setup_count: int
-    # output: None
-    def create_box_plot(self, file_loc, runs, n, setup_count):
-        # read the data from the file & create the box plot
-        df = pd.read_csv(file_loc)
-        fig = px.box(df, x='mutation_strategy', y='evaluation_count', points='all', title=f'Box Plot of Evaluation Count by Mutation Strategy (n={n} | setup_count = {setup_count} | {runs} Runs)')
-        fig.show()
-
-    # create_heatmap visualization
-    # input: file_loc: string, runs: int, n: int, setup_count: int
-    # output: None
-    def create_heatmap(self, file_loc, runs, n, setup_count):
-        # read the data from the file & create the heatmap
-        df = pd.read_csv(file_loc)
-        heatmap_data = df.pivot_table(values='evaluation_count', index='mutation_strategy', columns='recombination_strategy', aggfunc='mean')
-        fig = go.Figure(data=go.Heatmap(z=heatmap_data.values, x=heatmap_data.columns, y=heatmap_data.index))
-        fig.update_layout(title=f'Heatmap of Evaluation Count by Strategies (n={n} | setup_count = {setup_count} | {runs} Runs)', xaxis_title='Recombination Strategy', yaxis_title='Mutation Strategy')
-        fig.show()
-
-    # create_scatter_plot visualization
-    # input: file_loc: string, runs: int, n: int, setup_count: int
-    # output: None
-    def create_scatter_plot(self, file_loc, runs, n, setup_count):
-        # read the data from the file & create the scatter plot
-        df = pd.read_csv(file_loc)
-        fig = px.scatter(df, x='RECOMBINATION_RATE', y='evaluation_count', color='evaluation_count', size='MUTATION_RATE', title=f'Scatter Plot: TOURNAMENT_GROUP_SIZE vs Evaluation Count (n={n} | setup_count = {setup_count} | {runs} Runs)')
-        fig.update_traces(marker=dict(size=10))
-        fig.show()
-
-    # create_numeric_heatmap visualization
-    # input: file_loc: string, runs: int, n: int, setup_count: int
-    # output: None
-    def create_numeric_heatmap(self, file_loc, runs, n, setup_count):
-        # read the data from the file
-        df = pd.read_csv(file_loc)
-        numerical_columns = ['POPULATION_SIZE', 'NUM_OFFSPRING_RATE', 'RECOMBINATION_RATE', 'MUTATION_RATE', 'TOURNAMENT_GROUP_SIZE']
-
-        # create the heatmap
-        y = 'MUTATION_RATE'
-        x = 'RECOMBINATION_RATE'
-        heatmap_data = df.pivot_table(
-            values='evaluation_count', 
-            index=y,  
-            columns=x,
-            aggfunc='mean' 
-        )
-        
-        fig = go.Figure(data=go.Heatmap(
-            z=heatmap_data.values,  
-            x=heatmap_data.columns,  
-            y=heatmap_data.index,    
-            colorscale='Viridis'  
-        ))
-        
-        fig.update_layout(
-            title=f'Heatmap of Evaluation Count by Mutation & Recombination Rates (n={n} | setup_count = {setup_count} | {runs} Runs)',
-            xaxis_title=x,
-            yaxis_title=y
-        )
-        
-        fig.show()
-    
-    # create_density_plot visualization
-    # input: file_loc: string, runs: int, n: int, setup_count: int
-    # output: None
-    def create_density_plot(self, file_loc, runs, n, setup_count):
-        # read the data from the file & create the density plot
-        df = pd.read_csv(file_loc)
-        fig = px.density_contour(df, 
-                                x='RECOMBINATION_RATE', 
-                                y='MUTATION_RATE', 
-                                z='evaluation_count',
-                                title=f'Density Plot of Evaluation Count by Mutation & Recombination Rates (n={n} | setup_count = {setup_count} | {runs} Runs)')
-        fig.show()
 
     # create_density_heatmap visualization
     # input: file_loc: string, runs: int, n: int, setup_count: int
