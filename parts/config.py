@@ -252,7 +252,7 @@ setup_genocide = {  'GENOME_SIZE':                    6,
                     'termination_strategy':       'evaluation_count',
                     'visualization_strategy':     'terminal',
 }
-setup_mean_or_max = {  'GENOME_SIZE':                 6,
+setup_mean_or_max = {  'GENOME_SIZE':                 10,
                     'POPULATION_SIZE':              100,
                     'NUM_OFFSPRING_RATE':           0.2,
                     'RECOMBINATION_RATE':          0.80,
@@ -272,7 +272,7 @@ setup_mean_or_max = {  'GENOME_SIZE':                 6,
                     'visualization_strategy':     'terminal',
 }
 
-setup_dynamic = {  'GENOME_SIZE':                     6,
+setup_dynamic = {  'GENOME_SIZE':                     8,
                     'POPULATION_SIZE':              100,
                     'NUM_OFFSPRING_RATE':           0.2,
                     'RECOMBINATION_RATE':          0.90,
@@ -292,7 +292,7 @@ setup_dynamic = {  'GENOME_SIZE':                     6,
                     'visualization_strategy':     'terminal',
 }
 
-setup_dyn_stagn = {  'GENOME_SIZE':                   7,
+setup_dyn_stagn = {  'GENOME_SIZE':                   14,
                     'POPULATION_SIZE':              100,
                     'NUM_OFFSPRING_RATE':           0.2,
                     'RECOMBINATION_RATE':          0.90,

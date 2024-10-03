@@ -84,7 +84,7 @@ class Genetic_Algorithm_Avg:
     
 if __name__ == '__main__':
     iters = 3
-    setup_count = 1000
+    setup_count = 100
     pt = Parameter_Tuning('LHS')
     setups = pt.tuning_strategy(setup_count)
     with open(config.curr_setups_loc, 'w') as curr_setups:

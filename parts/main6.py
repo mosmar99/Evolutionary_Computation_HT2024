@@ -105,7 +105,7 @@ class Genetic_Algorithm:
     
 if __name__ == '__main__':
     gen_algo = Genetic_Algorithm(**config.setup_genocide)
-    path = config.log_path_geno8
+    path = config.log_path_geno9
     with open(path, 'w') as logfile:
         for _ in range(gen_algo.iters-1):
             population = gen_algo.get_population()

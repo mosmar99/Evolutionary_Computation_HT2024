@@ -111,7 +111,7 @@ class Genetic_Algorithm:
                 return self.generations
 
             self.curr_most_fit_individual = max(self.fitness(population))
-            genocide_factor = max(1/6, 1 - (self.GENOME_SIZE / (self.GENOME_SIZE + self.generations**(3/4)))) # declines to its min: 1.0 -> 0.1
+            genocide_factor = max(1/6, (self.GENOME_SIZE / (self.GENOME_SIZE + self.generations**(1/2)))) # declines to its min: 1.0 -> 0.1
             dynamic_genocide_perc = self.GENOCIDE_PERC * genocide_factor
             if self.destroy.check_stagnation(self.curr_most_fit_individual):
                 population = self.destroy.apply_genocide(population, dynamic_genocide_perc, self.fitness)
