@@ -1,3 +1,9 @@
+"""
+This file contains the topX setups for a random run of the main_setup_comparison.py genetic algorithm.
+Authors: Mahmut Osmanovic (mosmar99), Sebastian Tuura (tuura01), Isac Paulsson (isacpaulsson), Emil Wagman (Neobyte01), Mohammad Al Khaled (MohamadAlkhaled)
+Last updated: 2024-10-02
+"""
+
 s_1768 = {
     'GENOME_SIZE': 8,
     'MAX_FITNESS_EVALUATIONS': 10000,
