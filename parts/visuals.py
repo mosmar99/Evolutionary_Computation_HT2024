@@ -134,16 +134,23 @@ class Visualization:
         # Show the plot
         fig.show()
 
+
+    # Exponent plot visualization
+    # input: file_loc: string, runs: int 
+    # output: None
     def exponent_plot(self, file_loc, runs):
         exponents = []
         eval_counts = []
-        
+
+        # open fild in read mode
         with open(file_loc, 'r') as file:
             for line in file:
+                # append the values
                 exponent, count = line.strip().split(',')
                 exponents.append(exponent)
                 eval_counts.append(float(count))
 
+        # create and display plot
         fig, axs = plt.subplots(1, 1, figsize=(10, 4)) 
         axs.plot(exponents, eval_counts, label='Exponents', color='blue')
         axs.set_title(f"Evaluation count by survival exponent ({runs} runs/exponent)")
@@ -155,19 +162,25 @@ class Visualization:
         plt.tight_layout()
         plt.show()
 
+    # Convergence plot visualization for population fitness over generations
+    # input: file_loc: string, runs: int
+    # output: None
     def exponent_convergance_plot(self, file_loc, runs):
         evals = []
         max_evals = []
         avg_evals = []
         min_evals = []
-        
+
+        # open file in read mode
         with open(file_loc, 'r') as file:
             for line in file:
+                # append values from file
                 max_eval, avg_eval, min_eval = line.strip().split(',,')
                 max_evals.append([float(val) for val in max_eval.strip('[]').split(',')])
                 avg_evals.append([float(val) for val in avg_eval.strip('[]').split(',')])
                 min_evals.append([float(val) for val in min_eval.strip('[]').split(',')])   
 
+        # create and show plot
         fig, axs = plt.subplots(1, 1, figsize=(10, 4)) 
 
         axs.plot(np.arange(1, len(max_evals[2])+1), max_evals[2], label='50 max', color='red')

@@ -1,3 +1,9 @@
+"""
+This file contains the main file used to compare the genetic algorithm with genocide, and static or dynamic mutation / recombination rates.
+Authors: Mahmut Osmanovic (mosmar99), Sebastian Tuura (tuura01), Isac Paulsson (isacpaulsson), Emil Wagman (Neobyte01), Mohammad Al Khaled (MohamadAlkhaled)
+Last updated: 2024-10-02
+"""
+
 import config
 import time
 from init_pop import Init_Pop
@@ -10,9 +16,14 @@ from termination import Termination
 from visuals import Visualization
 from destroy import Destroy
 
+# Genetic Algorithm class
 class Genetic_Algorithm:
+    # init function for Genetic_Algorithm class
+    # input: **kwargs , contains the information about the setup we want to run.
+    # output: None
     def __init__(self, **kwargs):
-
+        
+        # Some intializations and assignments
         self.GENOME_SIZE = kwargs['GENOME_SIZE'] 
         self.MAX_FITNESS_EVALUATIONS = kwargs['MAX_FITNESS_EVALUATIONS']
         self.fitness_function = Fitness_Function(kwargs['fitness_strategy'])
@@ -42,10 +53,15 @@ class Genetic_Algorithm:
         self.iters = 500
         self.iters = 1
 
-
+    # create the initial population
+    # input: None
+    # output: population: numpy array
     def get_population(self):
         return self.init(self.GENOME_SIZE, self.POPULATION_SIZE)
  
+    # solve function for Genetic_Algorithm class.
+    # input: population: numpy array
+    # output: fitness_evals: int
     def solve(self, population):
         is_solution = False
         self.curr_fitness_evaluations = 0
@@ -61,19 +77,27 @@ class Genetic_Algorithm:
         min_history.append(min(self.fitness(population)))
 
         # WITH GENOCIDE
+        # while termination condition is not met
+        # will terminate if:
+        # - max fitness evaluations reached
+        # - max iterations reached
+        # - solution is found
         while( not(self.termination( curr_fitness_evaluations=self.curr_fitness_evaluations,
                                      max_fitness_evaluations=self.MAX_FITNESS_EVALUATIONS,
                                      curr_iterations=0,  
                                      max_iterations=10000, 
                                      is_solution=is_solution )) ):
             
+            # calculate exploration and exploitation factors
             # set both at expected infimum to begin with
             exploration_factor = max(0.1, (self.GENOME_SIZE / (self.GENOME_SIZE + self.generations**(3/4)))) # declines to its min: 1.0 -> 0.1
             exploitation_factor = max(0.1, 1-exploration_factor) # grows to its max: 0.1 -> 1.0
 
+            # calculate dynamic recombination and mutation rates
             dynamic_recombination_rate = self.RECOMBINATION_RATE * exploration_factor 
             dynamic_mutation_rate = self.MUTATION_RATE * exploitation_factor
             
+            # apply genetic operators & calculate fitness
             selected_parents = self.parent_selection(population, self.NUM_OFFSPRING_RATE, self.TOURNAMENT_GROUP_SIZE, self.fitness)
             offspring = self.recombination(selected_parents, dynamic_recombination_rate, self.GENOME_SIZE)
             mutated_offspring = self.mutation(offspring, dynamic_mutation_rate, self.GENOME_SIZE)
@@ -97,6 +121,9 @@ class Genetic_Algorithm:
             self.generations += 1
         return self.curr_fitness_evaluations, max_history, average_history, min_history
     
+    # Worker function for running a genetic algorithm over multiple iterations
+    # input: iters: int - the number of iterations to run the algorithm
+    # output: tuple: (float, List[float], List[float], List[float]) 
     def worker(self, iters):
         tot_max_history = []
         tot_average_history = []
@@ -110,6 +137,9 @@ class Genetic_Algorithm:
             avg_gens += curr_fitness_evaluations
         return round(avg_gens / iters, 2), pad_and_average(tot_max_history), pad_and_average(tot_average_history), pad_and_average(tot_min_history)
 
+# Function to pad lists and calculate their average values
+# input: lists: List[List[float]] - a list of lists containing numerical values
+# output: List[float] - a list of average values computed from the input lists
 def pad_and_average(lists):
     max_len = max([len(ls) for ls in lists])
     averages = []
@@ -126,6 +156,10 @@ def pad_and_average(lists):
 
     return averages
 
+
+# "main function" for genetic algorithm
+# for different weighting exponents and logging the results
+# output: None - results are appended to eval_counts and written to a log file
 if __name__ == '__main__':
     eval_counts = []
 
