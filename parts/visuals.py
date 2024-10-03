@@ -190,7 +190,7 @@ class Visualization:
         plt.grid()
         plt.tight_layout()
         plt.show()
-        
+
     # graph_space_vs_solutions visualization
     # input: data_fil_loc: string
     # output: None
@@ -267,19 +267,25 @@ class Visualization:
         fig, axs = plt.subplots(1, 2, figsize=(10, 4))
 
         # create column 1 & add the values
-        axs[0].plot(iters, df.y1, label='Static', color='blue')
-        axs[0].set_title(f"Without: n={n}")
-        axs[0].axhline(y=np.mean(df.y1), color='darkblue', linestyle='--', label=f'Avg. {np.mean(df.y1)}', zorder=1)
-        axs[0].set_xlabel('Iteration')
-        axs[0].set_ylabel('Final Generation Count')
+        axs[0].plot(iters, df.y1, color='blue')
+        # axs[0].set_title(f"Trigger Gen: Stagnation of Max. Fit Individual | n={n}")
+        # axs[0].set_title(f"Without Genocide | n={n}")
+        # axs[0].set_title(f"Static Recombination & Mutation Rate | n={n}")
+        axs[0].set_title(f"Static Genocide Rates | n={n}")
+        axs[0].axhline(y=np.mean(df.y1), color='darkblue', linestyle='--', label=f'Avg. {round(np.mean(df.y1), 2)}', zorder=1)
+        axs[0].set_xlabel('Setup')
+        axs[0].set_ylabel('Generation Count')
         axs[0].legend()
-
+        
         # create column 2 & add the values
-        axs[1].plot(iters, df.y2, label='Dynamic', color='green', zorder=0)
-        axs[1].set_title(f"With: n={n}")
-        axs[1].axhline(y=np.mean(df.y2), color='darkgreen', linestyle='--', label=f'Avg. {np.mean(df.y2)}', zorder=1)
-        axs[1].set_xlabel('Iteration')
-        axs[1].set_ylabel('Final Generation Count')
+        axs[1].plot(iters, df.y2, color='green', zorder=0)
+        # axs[1].set_title(f"Trigger Gen: Stagnation of Population Mean | n={n}")
+        # axs[1].set_title(f"With Genocide | n={n}")
+        # axs[1].set_title(f"Dynamic Recombination & Mutation Rate | n={n}")
+        axs[1].set_title(f"Dynamic Genocide Rates | n={n}")
+        axs[1].axhline(y=np.mean(df.y2), color='darkgreen', linestyle='--', label=f'Avg. {round(np.mean(df.y2),2)}', zorder=1)
+        axs[1].set_xlabel('Setup')
+        axs[1].set_ylabel('Generation Count')
         axs[1].legend()
 
         # Display the plots

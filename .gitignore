@@ -1,9 +1,9 @@
 # Visuals and logs
-*.csv
 *.html
 *.log
 logs/
 !sample logs/*.log
+
 
 # Byte-compiled / optimized / DLL files
 __pycache__/
@@ -12,10 +12,6 @@ __pycache__/
 
 # C extensions
 *.so
-
-# logging
-logs/log.csv
-parts/logs/strats100_runs100_files
 
 # Distribution / packaging
 .Python
@@ -66,7 +62,6 @@ cover/
 *.pot
 
 # Django stuff:
-*.log
 local_settings.py
 db.sqlite3
 db.sqlite3-journal
