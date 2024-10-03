@@ -323,10 +323,9 @@ setup_dyn_stagn = {  'GENOME_SIZE':                   14,
                     'termination_strategy':       'evaluation_count',
                     'visualization_strategy':     'terminal',
 }
-
 setup_final = { 'GENOME_SIZE': 8,
                 'POPULATION_SIZE': 116, 
-                'MAX_FITNESS_EVALUATIONS': 100000,
+                'MAX_FITNESS_EVALUATIONS': 10000,
                 'NUM_OFFSPRING_RATE': 0.543, 
                 'RECOMBINATION_RATE': 0.716, 
                 'MUTATION_RATE': 0.065, 

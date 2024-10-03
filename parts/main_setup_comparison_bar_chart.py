@@ -119,9 +119,9 @@ class Genetic_Algorithm_Avg:
 # output: None
 if __name__ == '__main__':
     # some initial setup
-    iters = 50
-    setup_count = 500
-    topX = 500
+    iters = 10
+    setup_count = 2000
+    topX = 50
 
     # create the setups using LHS
     pt = Parameter_Tuning('LHS')

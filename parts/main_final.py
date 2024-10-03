@@ -2,6 +2,8 @@
 This file contains the final main file which is responsible for running the genetic algorithm with the final setup.
 Authors: Mahmut Osmanovic (mosmar99), Sebastian Tuura (tuura01), Isac Paulsson (isacpaulsson), Emil Wagman (Neobyte01), Mohammad Al Khaled (MohamadAlkhaled)
 Last updated: 2024-10-02
+
+BEST VERSION.
 """
 
 # IMPORTS
@@ -16,8 +18,6 @@ from parent_selection import Parent_Selection
 from termination import Termination
 from visuals import Visualization
 from destroy import Destroy
-
-
 
 # Genetic Algorithm class
 class Genetic_Algorithm:
@@ -52,8 +52,8 @@ class Genetic_Algorithm:
         self.curr_fitness_evaluations = 0
         self.curr_most_fit_individual = 0
         self.generations = 0
-        self.iters = 100
-        self.runs = 10
+        self.iters = 50
+        self.runs = 3
     
     # create the initial population
     # input: None
@@ -83,7 +83,7 @@ class Genetic_Algorithm:
             
             # calculate exploration and exploitation factors
             # set both at expected infimum to begin with
-            exploration_factor = max(0.1, (self.GENOME_SIZE / (self.GENOME_SIZE + self.generations**(3/4)))) # declines to its min: 1.0 -> 0.1
+            exploration_factor = max(0.1, (self.GENOME_SIZE / (self.GENOME_SIZE + self.generations**(1/2)))) # declines to its min: 1.0 -> 0.1
             exploitation_factor = max(0.1, 1-exploration_factor) # grows to its max: 0.1 -> 1.0
 
             # calculate dynamic recombination and mutation rates
@@ -104,7 +104,7 @@ class Genetic_Algorithm:
 
             # check stagnation and apply genocide if necessary
             self.curr_most_fit_individual = max(self.fitness(population))
-            genocide_factor = max(1/6, 1 - (self.GENOME_SIZE / (self.GENOME_SIZE + self.generations**(3/4)))) # declines to its min: 1.0 -> 0.1
+            genocide_factor = max(1/6, 1 - (self.GENOME_SIZE / (self.GENOME_SIZE + self.generations**(1/2)))) # declines to its min: 1.0 -> 0.1
             dynamic_genocide_perc = self.GENOCIDE_PERC * genocide_factor
             if self.destroy.check_stagnation(self.curr_most_fit_individual):
                 population = self.destroy.apply_genocide(population, dynamic_genocide_perc, self.fitness)
