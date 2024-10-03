@@ -37,11 +37,11 @@ class Survival_Selection:
     # Selects the individuals that will survive to the next generation based on their fitness
     # input: population: numpy array, offspring: numpy array, fitness_function: function
     # output: total_population[selected_indecies]: numpy array
-    def prob_survival(self, population, offspring, fitness_function):
+    def prob_survival(self, population, offspring, fitness_function, weighting_exponent=5):
         total_population = np.concatenate([population, offspring])
         total_population_evals = np.array(fitness_function(np.concatenate([population, offspring])))
 
-        normalized_weights = total_population_evals**5 / np.sum(total_population_evals**5)
+        normalized_weights = total_population_evals**weighting_exponent / np.sum(total_population_evals**weighting_exponent)
         
         selected_indecies = np.random.choice(np.arange(len(total_population)), len(population), p=normalized_weights, replace=False)
         return total_population[selected_indecies]#
