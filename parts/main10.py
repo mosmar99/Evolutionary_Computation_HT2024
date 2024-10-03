@@ -39,7 +39,9 @@ class Genetic_Algorithm:
         self.curr_fitness_evaluations = 0
         self.curr_most_fit_individual = 0
         self.generations = 0
+        self.iters = 500
         self.iters = 1
+
 
     def get_population(self):
         return self.init(self.GENOME_SIZE, self.POPULATION_SIZE)
